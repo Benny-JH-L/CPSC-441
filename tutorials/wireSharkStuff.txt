@@ -1,0 +1,5 @@
+
+To see the packet information of the client/server running locally,
+select <Loopback IO> then filter by port used, tcp.port == <port#> 
+
+[FIN, <something>]  means server finished (terminated)
