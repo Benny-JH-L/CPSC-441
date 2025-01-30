@@ -1,0 +1,5 @@
+2025-01-30 13:03:39,816 - Server started and listening on localhost:12345
+2025-01-30 13:03:47,071 - Connection from ('127.0.0.1', 61447)
+2025-01-30 13:03:51,759 - Received request: simple|hello
+2025-01-30 13:03:51,759 - Sent response: Is palindrome: False
+2025-01-30 13:04:26,578 - Closed connection with ('127.0.0.1', 61447)
