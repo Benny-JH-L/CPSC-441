@@ -70,6 +70,8 @@ def is_palindrome(input_string):
 def palindrome_complex(input_string):
     """ (COMPLEX) Check if the given string is a palindrome. """
     
+    
+    
     return "HI|42 :)" # temp
 
 def start_server():
