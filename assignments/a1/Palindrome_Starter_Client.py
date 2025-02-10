@@ -26,22 +26,26 @@ def start_client():
                 message = f"simple|{input_string}"
                 client_socket.send(message.encode())
                 
-                # Wait for and display the server response
-                response = client_socket.recv(1024).decode()
-                print(f"Server response: {response}")
+                # # Wait for and display the server response
+                # response = client_socket.recv(1024).decode()
+                # print(f"Server response: {response}")
                 
             elif choice == '2':
                 input_string = input("Enter the string to check: ")
                 message = f"complex|{input_string}"
                 client_socket.send(message.encode())
                 
-                # Wait for and display the server response
-                response = client_socket.recv(1024).decode()
-                print(f"Server response: {response}")
+                # # Wait for and display the server response
+                # response = client_socket.recv(1024).decode()
+                # print(f"Server response: {response}")
                 
             elif choice == '3':
                 print("Exiting the client...")
                 break
+            
+            # Wait for and display the server response
+            response = client_socket.recv(1024).decode()
+            print(f"Server response: {response}")
 
 if __name__ == "__main__":
     start_client()

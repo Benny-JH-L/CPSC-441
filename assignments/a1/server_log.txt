@@ -3,3 +3,19 @@
 2025-01-30 13:03:51,759 - Received request: simple|hello
 2025-01-30 13:03:51,759 - Sent response: Is palindrome: False
 2025-01-30 13:04:26,578 - Closed connection with ('127.0.0.1', 61447)
+2025-02-10 11:29:11,924 - Server started and listening on localhost:12345
+2025-02-10 11:29:20,603 - Connection from ('127.0.0.1', 55327)
+2025-02-10 11:29:24,372 - Received request: simple|asd
+2025-02-10 11:29:24,372 - Sent response: Is palindrome: False
+2025-02-10 11:29:33,679 - Received request: complex|qwefq
+2025-02-10 11:29:33,679 - Sent response: Can form a palindrome: HI
+Complexity score: 42 :) (number of swaps)
+2025-02-10 11:31:49,922 - Closed connection with ('127.0.0.1', 55327)
+2025-02-10 11:32:45,213 - Server started and listening on localhost:12345
+2025-02-10 11:32:47,874 - Connection from ('127.0.0.1', 55489)
+2025-02-10 11:32:50,483 - Received request: simple|sf
+2025-02-10 11:32:50,484 - Sent response: Is palindrome: False
+2025-02-10 11:32:54,525 - Received request: complex|bregre
+2025-02-10 11:32:54,526 - Sent response: Can form a palindrome: HI
+Complexity score: 42 :) (number of swaps)
+2025-02-10 11:33:18,690 - Closed connection with ('127.0.0.1', 55489)

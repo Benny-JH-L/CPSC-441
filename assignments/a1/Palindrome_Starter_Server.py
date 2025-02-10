@@ -16,6 +16,7 @@ PORT = 12345
 def handle_client(client_socket, client_address):
     """ Handle incoming client requests. """
     logging.info(f"Connection from {client_address}")
+    print(f"Connection from {client_address}")
     
     try:
         while True:
@@ -25,6 +26,7 @@ def handle_client(client_socket, client_address):
                 break
 
             logging.info(f"Received request: {request_data}")
+            print(f"Received request: {request_data}")
             
             # simple/complex|<message> -> process for simple and complex check for <mesage>
             
@@ -32,36 +34,43 @@ def handle_client(client_socket, client_address):
             response = process_request(request_data)
             client_socket.send(response.encode())
             logging.info(f"Sent response: {response}")
+            print(f"Sent response: {response}")
+            
     # should handle errors -> see assignment details
     finally:
         # Close the client connection
         client_socket.close()
         logging.info(f"Closed connection with {client_address}")
+        print(f"Closed connection with {client_address}")
 
 def process_request(request_data):
     """ Process the client's request and generate a response. """
-    # Students need to parse the request and call the appropriate palindrome function
+
     # simple/complex|<message>
     check_type, input_string = request_data.split('|')  # separate words that have '|' between them -> gives us the 'checktype' -> simple or complex, and the message it self
     input_string = ''.join(e for e in input_string if e.isalnum()).lower()  # removes all special characters, spaces, and makes it all letters lower case
+    isPalindrome = is_palindrome(input_string) # check if the input is a palindrome
     
     if check_type == 'simple':
-        result = is_palindrome(input_string)
-        return f"Is palindrome: {result}"
+        return f"Is palindrome: {isPalindrome}"
     
-    # elif check_type == 'complex': 
-        # result = is_palindrome_complex(input_string)
-        # return f"Can rearrange: {able}\nComplexity: {comp} # something like this i think
+    elif check_type == 'complex': 
+        # Check if the string is already a palindrome
+        if (isPalindrome):
+            return f"True (The string is already a palindrome)"
 
+        # If the string is not already a palindrome, compute complexity score
+        canFormPalindrome, complexScore = palindrome_complex(input_string).split('|')   # return type will be: "True/False|Complexity Score"
+        return f"Can form a palindrome: {canFormPalindrome}\nComplexity score: {complexScore} (number of swaps)"
 
 def is_palindrome(input_string):
     """ Check if the given string is a palindrome. """
     return input_string == input_string[::-1]
 
-def is_palindrome_complex(input_string):
+def palindrome_complex(input_string):
     """ (COMPLEX) Check if the given string is a palindrome. """
     
-    return
+    return "HI|42 :)" # temp
 
 def start_server():
     """ Start the server and listen for incoming connections. """
