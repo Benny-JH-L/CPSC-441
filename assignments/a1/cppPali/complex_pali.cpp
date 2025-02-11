@@ -7,49 +7,51 @@ using namespace std;
 
 int complexPali(string input)
 {
-    unordered_map<char, int> countOfCharactersMap; // `char` is key, `int` is value
+    unordered_map<char, int> countOfCharactersMap; // `char` is key, `int` is value (number of times the `char` occures in the `input`)
     int numSwaps = 0;
 
-    // count the charactes in the input
+    // count the characters in the input
     for (char c : input)
         countOfCharactersMap[c]++;
-    
-    // If the input is odd length, determine if there is only 1 char that is odd numbered
-    if (input.length() % 2 == 1)
+
+    bool foundOdd = false;
+    bool palindromePossible = true;
+    char oddInstancedChar = ' ';
+    // Go through letters and see if we have multiple letters with odd numbered occurances (a character has an odd number of instances).
+    for (auto pair : countOfCharactersMap)
     {
-        bool foundOdd = false;
-        bool palindromePossible = true;
-        char oddInstancedChar = ' ';
-        // Go through letters and see if we have multiple letters with odd numbered occurances
-        for (auto pair : countOfCharactersMap)
-        {
-            auto [chara, instances] = pair;
+        auto [chara, instances] = pair;
 
-            if (instances % 2 == 1 && !foundOdd)    // check if number of instances of `chara` is odd and if an odd numbered occuring `chara` hasn't been found yet
-            {
-                foundOdd = true;                    // found first occurance of odd numbered `chara`
-                oddInstancedChar = chara;           // set the odd instanced `chara`
-            }
-            // if found a `chara` that has odd occurances and there is already 
-            // another `chara` found with odd numbered occurances, then this `input` cannot be made into a palindrome.
-            else if (instances % 2 == 1 && foundOdd)
-            {
-                palindromePossible = false;
-                break;
-            }
-        }
-        if (!palindromePossible)
-            return -1;          // return, can't turn `input` into a palindrome
-        
-        // find the index of all odd instanced character
-        vector<int> indiciesOfOddNumberedChars;
-        for (size_t i = 0; i < input.length(); i++)
+        if (instances % 2 == 1 && !foundOdd)    // check if number of instances of `chara` is odd and if an odd numbered occuring `chara` hasn't been found yet
         {
-            if (input[i] == oddInstancedChar)
-                indiciesOfOddNumberedChars.push_back(i);
+            foundOdd = true;                    // found first occurance of odd numbered `chara`
+            oddInstancedChar = chara;           // set the odd instanced `chara`
         }
-
-        int middleIndex = input[input.length() / 2];
+        // if found a `chara` that has odd occurances and there is already 
+        // another `chara` found with odd numbered occurances, then this `input` cannot be made into a palindrome.
+        else if (instances % 2 == 1 && foundOdd)
+        {
+            palindromePossible = false;
+            break;
+        }
+    }
+    if (!palindromePossible)
+        return -1;          // return, can't turn `input` into a palindrome
+    
+    // find the index of all odd instanced character that are not in an optimal position
+    vector<int> indiciesOfOddNumberedChars;
+    for (size_t left = 0, right = input.length() - 1; left < right; left++, right--)
+    {
+        if (input[left] == oddInstancedChar && input[left] != input[right])
+            indiciesOfOddNumberedChars.push_back(left);
+        else if (input[right] == oddInstancedChar && input[left] != input[right])
+            indiciesOfOddNumberedChars.push_back(right);
+    }
+  
+    // If the input has a character with an odd number of instances
+    if (foundOdd)
+    {
+        int middleIndex = input.length() / 2;
         char middleCharToSwap = input[middleIndex];
         bool foundOptimal = false;
         // Find the optimal index to swap one of the odd letters
@@ -57,7 +59,12 @@ int complexPali(string input)
         // And the swapped middle character is in a optimal position
         for (size_t left = 0, right = input.length() - 1; right > left && !foundOptimal; left++, right--)
         {
-            if (input[left] == middleCharToSwap || input[right] == middleCharToSwap)
+            // debug
+            // cout << "left: "<<input[left]<<endl;
+            // cout << "right: "<<input[right]<<endl;
+            // cout << "middle char is: "<<middleCharToSwap<<endl;
+            // we don't want to swap the middle with input[right] or input[left] if the left and right is the same letter
+            if ((input[left] == middleCharToSwap || input[right] == middleCharToSwap) && input[left] != input[right])
             {
                 for (int indexOfOdd : indiciesOfOddNumberedChars)
                 {
@@ -80,41 +87,11 @@ int complexPali(string input)
                         break;
                     }
                 }
-            }
-
-            /*
-            // if (input[left] == input[middleCharToSwap])
-            // {
-            // }
-            // else if (input[right] == input[middleCharToSwap])
-            // {    
-            //     for (int indexOfOdd : indiciesOfOddNumberedChars)
-            //     {
-            //         // do swap
-            //         char tmp = input[indexOfOdd];
-            //         input[indexOfOdd] = input[middleCharToSwap];
-            //         input[middleCharToSwap] = tmp;
-
-            //         if (input[left] != input[right])    // did swap, and it was not the most optimal, reverse swap and check next
-            //         {
-            //             // reverse swap
-            //             tmp = input[indexOfOdd];
-            //             input[indexOfOdd] = input[middleCharToSwap];
-            //             input[middleCharToSwap] = tmp;
-            //         }
-            //         else if (input[left] == input[right])   // was an optimal swap, break
-            //         {
-            //             foundOptimal = true;
-            //             break;
-            //         }
-            //     }
-            // }
-            */
-            
+            }         
         }
 
-        // Case where we could not find the most optimal swap, swap arbitrarily with middle letter 
-        // and an odd instanced character (numbered letter).
+        // Case where we could not find the most optimal swap, swap arbitrarily the middle letter 
+        // with an odd number of instances character that is not in an optimal position.
         if (!foundOptimal)
         {
             char oddLetterTmp = input[indiciesOfOddNumberedChars[0]];
@@ -159,10 +136,15 @@ int main()
 {
     // string s = "iiikckaac";
     // cout << s.length()/2 << endl;
+
     testHelper("cbbici", 2);   // expected 2 swaps
     testHelper("ivicc", 2);
     testHelper("iiicccc", 2);
     testHelper("iiikckaac", 2);
+    testHelper("iiikckaacc", -1);   // impossible
+    testHelper("iciccci", 1);
+    testHelper("icikkci", 1);
+    testHelper("icikcki", 2);
     return 0;
 }
 
