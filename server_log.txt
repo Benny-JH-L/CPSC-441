@@ -1,0 +1,10 @@
+2025-02-10 22:01:10,139 - Server started and listening on localhost:12345
+2025-02-10 22:01:14,980 - Connection from ('127.0.0.1', 58930)
+2025-02-10 22:01:45,865 - Server started and listening on localhost:12345
+2025-02-10 22:01:48,953 - Connection from ('127.0.0.1', 58951)
+2025-02-10 22:01:54,093 - Received request: complex|ff
+2025-02-10 22:01:54,093 - Sent response: True (The string is already a palindrome)
+2025-02-10 22:02:03,614 - Received request: complex|ergergerger
+2025-02-10 22:02:03,614 - Sent response: Can form a palindrome: True
+Complexity score: 2 (number of swaps)
+2025-02-10 22:02:17,369 - Closed connection with ('127.0.0.1', 58951)

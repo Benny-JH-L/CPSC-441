@@ -42,10 +42,20 @@ int complexPali(string input)
     vector<int> indiciesOfOddNumberedChars;
     for (size_t left = 0, right = input.length() - 1; left < right; left++, right--)
     {
-        if (input[left] == oddInstancedChar && input[left] != input[right])
-            indiciesOfOddNumberedChars.push_back(left);
-        else if (input[right] == oddInstancedChar && input[left] != input[right])
-            indiciesOfOddNumberedChars.push_back(right);
+        if (input[left] != input[right])
+        {
+            if (input[left] == oddInstancedChar)
+                indiciesOfOddNumberedChars.push_back(left);
+            else if (input[right] == oddInstancedChar)
+                indiciesOfOddNumberedChars.push_back(right);
+            else if (left + 1 == right - 1 && input[left+1] == oddInstancedChar)    // case where the middle contains a odd instanced character
+                indiciesOfOddNumberedChars.push_back(left+1);
+        }
+        // This if-block works too.
+        // if (input[left] == oddInstancedChar && input[left] != input[right])
+        //     indiciesOfOddNumberedChars.push_back(left);
+        // else if (input[right] == oddInstancedChar && input[left] != input[right])
+        //     indiciesOfOddNumberedChars.push_back(right);
     }
   
     // If the input has a character with an odd number of instances
@@ -73,7 +83,7 @@ int complexPali(string input)
                     input[indexOfOdd] = input[middleIndex];
                     input[middleIndex] = tmp;
     
-                    if (input[left] != input[right])    // did swap, and it was not the most optimal, reverse swap and check next
+                    if (input[left] != input[right])    // did swap, and it was not the most optimal, undo swap and check next
                     {
                         // reverse swap
                         tmp = input[indexOfOdd];
@@ -92,10 +102,12 @@ int complexPali(string input)
 
         // Case where we could not find the most optimal swap, swap arbitrarily the middle letter 
         // with an odd number of instances character that is not in an optimal position.
-        if (!foundOptimal)
+        // (Don't swap if middleIndex is already one of the odd instanced letters)
+        if (!foundOptimal && input[middleIndex] != oddInstancedChar)
         {
-            char oddLetterTmp = input[indiciesOfOddNumberedChars[0]];
-            input[indiciesOfOddNumberedChars[0]] = middleCharToSwap;
+            int arbitraryIndexOfOdd = indiciesOfOddNumberedChars[0];
+            char oddLetterTmp = input[arbitraryIndexOfOdd];
+            input[arbitraryIndexOfOdd] = middleCharToSwap;
             input[middleIndex] = oddLetterTmp;
             numSwaps++;
         }
@@ -144,7 +156,8 @@ int main()
     testHelper("iiikckaacc", -1);   // impossible
     testHelper("iciccci", 1);
     testHelper("icikkci", 1);
-    testHelper("icikcki", 2);
+    testHelper("icikcki", 2); 
+    testHelper("ergergerger", 2); 
     return 0;
 }
 

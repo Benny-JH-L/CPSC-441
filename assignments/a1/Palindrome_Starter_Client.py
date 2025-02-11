@@ -45,7 +45,7 @@ def start_client():
             
             # Wait for and display the server response
             response = client_socket.recv(1024).decode()
-            print(f"Server response: {response}")
+            print(f"---Server response---\n{response}")
 
 if __name__ == "__main__":
     start_client()
