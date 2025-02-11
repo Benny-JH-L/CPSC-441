@@ -32,7 +32,8 @@ def start_client():
         if (numConnectionTries >= 3):
             print("Could not connect to server, exiting the client....")
             return
-
+        
+        print("Connected to server...")
         # Client interaction loop
         while connectedWithServer:
             # Display the menu and get user input

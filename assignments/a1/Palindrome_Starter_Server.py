@@ -17,31 +17,73 @@ def handle_client(client_socket, client_address):
     """ Handle incoming client requests. """
     logging.info(f"Connection from {client_address}")
     print(f"Connection from {client_address}")
+    socket.setdefaulttimeout(5)
     
     try:
         while True:
-            # Receive data from the client
-            request_data = client_socket.recv(1024).decode()
-            if not request_data:  # Client has closed the connection
-                break
-
-            logging.info(f"Received request: {request_data}")
-            print(f"Received request: {request_data}")
-            
-            # simple/complex|<message> -> process for simple and complex check for <mesage>
-            
-            # Here, the request is processed to determine the response
-            response = process_request(request_data)
-            client_socket.send(response.encode())
-            logging.info(f"Sent response: {response}")
-            print(f"Sent response: <{response}>")
-            
-    # should handle errors -> see assignment details
+            try:
+                # Receive data from the client
+                request_data = client_socket.recv(1024).decode()
+                if not request_data:  # Client has closed the connection
+                    print("HI") # entering here, will break the while loop and go into the outter `finally` block
+                    break
+            except socket.timeout:
+                numTimeouts += 1
+                print(f"Client timeout ({numTimeouts} timeouts)...\nWaiting...")
+            finally:
+                logging.info(f"Received request: {request_data}")
+                print(f"Received request: {request_data}")
+                
+                # simple/complex|<message> -> process for simple and complex check for <mesage>
+                
+                # Here, the request is processed to determine the response
+                response = process_request(request_data)
+                client_socket.send(response.encode())
+                logging.info(f"Sent response: {response}")
+                print(f"Sent response: <{response}>")
+                numTimeouts = 0
     finally:
         # Close the client connection
         client_socket.close()
         logging.info(f"Closed connection with {client_address}")
         print(f"Closed connection with {client_address}")
+    
+    # numTimeouts = 0
+    # while True and numTimeouts < 3:
+    #     try:
+    #         # Receive data from the client
+    #         request_data = client_socket.recv(1024).decode()
+    #         if not request_data:  # Client has closed the connection
+    #             break
+
+    #         logging.info(f"Received request: {request_data}")
+    #         print(f"Received request: {request_data}")
+            
+    #         # simple/complex|<message> -> process for simple and complex check for <mesage>
+            
+    #         # Here, the request is processed to determine the response
+    #         response = process_request(request_data)
+    #         client_socket.send(response.encode())
+    #         logging.info(f"Sent response: {response}")
+    #         print(f"Sent response: <{response}>")
+    #         numTimeouts = 0
+    #     except socket.timeout:
+    #         numTimeouts += 1
+    #         print(f"Client timeout ({numTimeouts} timeouts)...\nWaiting...")
+    #     finally:
+    #         # Close the client connection
+    #         client_socket.close()
+    #         logging.info(f"Closed connection with {client_address}")
+    #         print(f"Closed connection with {client_address}")
+    
+    # close the connection with the client if there are 3 timeouts
+    # if (numTimeouts >= 3):
+    #     client_socket.close()
+    #     logging.info("Connection timed out...")
+    #     logging.info(f"Closed connection with {client_address}")
+    #     print("Connection timed out...")
+    #     print(f"Closed connection with {client_address}")
+
 
 def process_request(request_data):
     """ Process the client's request and generate a response. """
@@ -189,15 +231,33 @@ def swapAtIndex(input_str, index1, index2):
 def start_server():
     """ Start the server and listen for incoming connections. """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        # server_socket.settimeout(5)         # set 5 second time out
         server_socket.bind((HOST, PORT))
         server_socket.listen(5)
         logging.info(f"Server started and listening on {HOST}:{PORT}")
+        print(f"Server started and listening on {HOST}:{PORT}")
         
         while True:
             # Accept new client connections and start a thread for each client
             client_socket, client_address = server_socket.accept()
             threading.Thread(target=handle_client, args=(client_socket, client_address)).start() # include error checking for threads -> ex. terminate unexpectedly, or when server shuts down. 
-            # num = 0
+        
+        # tried making a time out for server
+        # numTimeout = 0
+        # while numTimeout < 3:
+        #     try:
+        #         while True and numTimeout < 3:
+        #             # Accept new client connections and start a thread for each client
+        #             client_socket, client_address = server_socket.accept()
+        #             threading.Thread(target=handle_client, args=(client_socket, client_address)).start() # include error checking for threads -> ex. terminate unexpectedly, or when server shuts down. 
+        #     except TimeoutError:
+        #         numTimeout += 1
+        #         logging.info(f"Client timeout at {HOST}:{PORT} ({numTimeout} timeouts)...\nWaiting...")
+        #         print(f"Client timeout at {HOST}:{PORT} ({numTimeout} timeouts)...\nWaiting...")
+        
+        # if (numTimeout >= 3):
+        #     logging.info(f"Client timeout, exiting...")
+        #     print(f"Client timeout, exiting...")
             
 if __name__ == '__main__':
     start_server()

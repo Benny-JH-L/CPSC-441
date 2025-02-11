@@ -119,3 +119,94 @@ Complexity score: 2 (number of swaps)
 2025-02-10 23:11:25,795 - Received request: complex|gerngrnwe
 2025-02-10 23:17:02,776 - Connection from ('127.0.0.1', 62157)
 2025-02-10 23:17:07,681 - Received request: simple|wegewewge
+2025-02-11 14:12:17,684 - Server started and listening on localhost:12345
+2025-02-11 14:12:30,506 - Connection from ('127.0.0.1', 64299)
+2025-02-11 14:13:22,096 - Received request: complex|giiygf
+2025-02-11 14:13:22,097 - Sent response: Impossible to form a palindrome with `giiygf`
+2025-02-11 14:13:41,436 - Closed connection with ('127.0.0.1', 64299)
+2025-02-11 14:16:00,021 - Server started and listening on localhost:12345
+2025-02-11 14:16:02,546 - Connection from ('127.0.0.1', 64471)
+2025-02-11 14:16:08,555 - Received request: simple|wgbr3g
+2025-02-11 14:16:08,556 - Sent response: Is palindrome: False
+2025-02-11 14:18:54,215 - Closed connection with ('127.0.0.1', 64471)
+2025-02-11 14:19:32,878 - Server started and listening on localhost:12345
+2025-02-11 14:20:56,874 - Server started and listening on localhost:12345
+2025-02-11 14:34:46,406 - Server started and listening on localhost:12345
+2025-02-11 14:39:48,778 - Server started and listening on localhost:12345
+2025-02-11 14:40:24,414 - Server started and listening on localhost:12345
+2025-02-11 14:40:29,411 - Client timeout at localhost12345 (1 timeouts)...
+Waiting...
+2025-02-11 14:41:57,462 - Server started and listening on localhost:12345
+2025-02-11 14:42:02,465 - Client timeout at localhost12345 (1 timeouts)...
+Waiting...
+2025-02-11 14:42:07,477 - Client timeout at localhost12345 (2 timeouts)...
+Waiting...
+2025-02-11 14:42:12,489 - Client timeout at localhost12345 (3 timeouts)...
+Waiting...
+2025-02-11 14:46:17,189 - Server started and listening on localhost:12345
+2025-02-11 14:46:22,202 - Client timeout at localhost:12345 (1 timeouts)...
+Waiting...
+2025-02-11 14:46:27,216 - Client timeout at localhost:12345 (2 timeouts)...
+Waiting...
+2025-02-11 14:46:32,220 - Client timeout at localhost:12345 (3 timeouts)...
+Waiting...
+2025-02-11 14:47:12,690 - Server started and listening on localhost:12345
+2025-02-11 14:47:17,685 - Client timeout at localhost:12345 (1 timeouts)...
+Waiting...
+2025-02-11 14:47:22,690 - Client timeout at localhost:12345 (2 timeouts)...
+Waiting...
+2025-02-11 14:47:27,696 - Client timeout at localhost:12345 (3 timeouts)...
+Waiting...
+2025-02-11 14:47:27,698 - Client timeout, exiting...
+2025-02-11 14:47:51,588 - Server started and listening on localhost:12345
+2025-02-11 14:47:56,602 - Client timeout at localhost:12345 (1 timeouts)...
+Waiting...
+2025-02-11 14:47:58,237 - Connection from ('127.0.0.1', 49744)
+2025-02-11 14:48:03,239 - Client timeout at localhost:12345 (2 timeouts)...
+Waiting...
+2025-02-11 14:48:08,240 - Client timeout at localhost:12345 (3 timeouts)...
+Waiting...
+2025-02-11 14:48:08,242 - Client timeout, exiting...
+2025-02-11 14:52:19,430 - Server started and listening on localhost:12345
+2025-02-11 14:52:36,110 - Server started and listening on localhost:12345
+2025-02-11 14:52:38,243 - Connection from ('127.0.0.1', 49915)
+2025-02-11 14:52:43,245 - Closed connection with ('127.0.0.1', 49915)
+2025-02-11 14:52:43,247 - Closed connection with ('127.0.0.1', 49915)
+2025-02-11 14:53:35,956 - Server started and listening on localhost:12345
+2025-02-11 14:53:40,655 - Connection from ('127.0.0.1', 49955)
+2025-02-11 14:53:45,669 - Closed connection with ('127.0.0.1', 49955)
+2025-02-11 14:53:45,671 - Closed connection with ('127.0.0.1', 49955)
+2025-02-11 14:54:34,709 - Server started and listening on localhost:12345
+2025-02-11 14:54:45,485 - Connection from ('127.0.0.1', 50003)
+2025-02-11 14:55:14,931 - Connection from ('127.0.0.1', 50018)
+2025-02-11 14:56:10,183 - Received request: complex|kb
+2025-02-11 14:56:10,183 - Sent response: Impossible to form a palindrome with `kb`
+2025-02-11 14:56:10,184 - Closed connection with ('127.0.0.1', 50003)
+2025-02-11 14:56:10,184 - Closed connection with ('127.0.0.1', 50003)
+2025-02-11 14:57:49,609 - Server started and listening on localhost:12345
+2025-02-11 14:57:52,662 - Connection from ('127.0.0.1', 50110)
+2025-02-11 14:57:55,777 - Received request: complex|eef
+2025-02-11 14:57:55,779 - Sent response: Can form a palindrome: True
+Complexity score: 1 (number of swaps)
+2025-02-11 14:57:55,780 - Closed connection with ('127.0.0.1', 50110)
+2025-02-11 14:57:55,781 - Closed connection with ('127.0.0.1', 50110)
+2025-02-11 15:00:03,781 - Server started and listening on localhost:12345
+2025-02-11 15:00:06,371 - Connection from ('127.0.0.1', 50192)
+2025-02-11 15:00:12,531 - Received request: complex|bvvgv
+2025-02-11 15:00:12,532 - Sent response: Impossible to form a palindrome with `bvvgv`
+2025-02-11 15:00:33,253 - Closed connection with ('127.0.0.1', 50192)
+2025-02-11 15:00:40,126 - Server started and listening on localhost:12345
+2025-02-11 15:00:42,872 - Connection from ('127.0.0.1', 50229)
+2025-02-11 15:00:46,052 - Received request: complex|egergre
+2025-02-11 15:00:46,052 - Sent response: Can form a palindrome: True
+Complexity score: 2 (number of swaps)
+2025-02-11 15:01:08,935 - Closed connection with ('127.0.0.1', 50229)
+2025-02-11 15:01:23,340 - Server started and listening on localhost:12345
+2025-02-11 15:01:26,573 - Connection from ('127.0.0.1', 50254)
+2025-02-11 15:01:30,376 - Received request: complex|rfguorhgrooirhg3rohgrio
+2025-02-11 15:01:30,377 - Sent response: Impossible to form a palindrome with `rfguorhgrooirhg3rohgrio`
+2025-02-11 15:03:31,842 - Closed connection with ('127.0.0.1', 50254)
+2025-02-11 15:04:33,780 - Server started and listening on localhost:12345
+2025-02-11 15:04:38,624 - Connection from ('127.0.0.1', 50422)
+2025-02-11 15:04:44,498 - Received request: complex|wegwegewg
+2025-02-11 15:04:44,499 - Sent response: Impossible to form a palindrome with `wegwegewg`
