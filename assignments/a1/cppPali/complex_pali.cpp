@@ -56,6 +56,7 @@ int complexPali(string input)
         //     indiciesOfOddNumberedChars.push_back(left);
         // else if (input[right] == oddInstancedChar && input[left] != input[right])
         //     indiciesOfOddNumberedChars.push_back(right);
+        // else if <middle case>
     }
   
     // If the input has a character with an odd number of instances
@@ -158,6 +159,7 @@ int main()
     testHelper("icikkci", 1);
     testHelper("icikcki", 2); 
     testHelper("ergergerger", 2); 
+    testHelper("erbwerhwh", -10); // is it 3?
     return 0;
 }
 

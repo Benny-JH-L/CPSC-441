@@ -59,3 +59,63 @@ Complexity score: 1 (number of swaps)
 2025-02-10 21:44:51,310 - Connection from ('127.0.0.1', 58157)
 2025-02-10 21:44:57,229 - Received request: complex|ergergerger
 2025-02-10 21:44:57,229 - Closed connection with ('127.0.0.1', 58157)
+2025-02-10 22:09:23,497 - Server started and listening on localhost:12345
+2025-02-10 22:09:28,239 - Connection from ('127.0.0.1', 59286)
+2025-02-10 22:09:38,085 - Received request: complex|ergergerger'
+2025-02-10 22:09:38,085 - Closed connection with ('127.0.0.1', 59286)
+2025-02-10 22:10:24,986 - Server started and listening on localhost:12345
+2025-02-10 22:10:25,012 - Connection from ('127.0.0.1', 59323)
+2025-02-10 22:10:31,744 - Received request: complex|ergergerger
+2025-02-10 22:10:31,744 - Sent response: Can form a palindrome: True
+Complexity score: 2 (number of swaps)
+2025-02-10 22:10:38,364 - Received request: complex|ergergerger'
+2025-02-10 22:10:38,364 - Sent response: Can form a palindrome: True
+Complexity score: 2 (number of swaps)
+2025-02-10 22:12:50,234 - Server started and listening on localhost:12345
+2025-02-10 22:13:00,057 - Connection from ('127.0.0.1', 59452)
+2025-02-10 22:13:09,726 - Closed connection with ('127.0.0.1', 59452)
+2025-02-10 22:14:08,398 - Connection from ('127.0.0.1', 59502)
+2025-02-10 22:14:17,107 - Received request: complex|gblkjbnfbwiufwebf
+2025-02-10 22:14:17,107 - Sent response: Impossible to form palindrome with `gblkjbnfbwiufwebf`
+2025-02-10 22:14:21,514 - Received request: simple|wepfknewfbnoiewbfneow
+2025-02-10 22:14:21,514 - Sent response: Is palindrome: False
+2025-02-10 22:14:25,806 - Received request: complex|wepfknewfbnoiewbfneow
+2025-02-10 22:14:25,806 - Sent response: Impossible to form palindrome with `wepfknewfbnoiewbfneow`
+2025-02-10 22:14:52,672 - Received request: simple|ergergerger
+2025-02-10 22:14:52,672 - Sent response: Is palindrome: False
+2025-02-10 22:14:55,121 - Received request: complex|ergergerger
+2025-02-10 22:14:55,121 - Sent response: Can form a palindrome: True
+Complexity score: 2 (number of swaps)
+2025-02-10 22:17:15,187 - Received request: complex|gggggg
+2025-02-10 22:17:15,187 - Sent response: True (The string is already a palindrome)
+2025-02-10 22:17:19,196 - Received request: simple|gggggg
+2025-02-10 22:17:19,196 - Sent response: Is palindrome: True
+2025-02-10 22:17:22,269 - Received request: complex|3eflknbewifb
+2025-02-10 22:17:22,269 - Sent response: Impossible to form palindrome with `3eflknbewifb`
+2025-02-10 22:43:49,670 - Closed connection with ('127.0.0.1', 59502)
+2025-02-10 22:53:54,833 - Server started and listening on localhost:12345
+2025-02-10 22:53:58,639 - Connection from ('127.0.0.1', 61157)
+2025-02-10 22:53:58,639 - Closed connection with ('127.0.0.1', 61157)
+2025-02-10 22:54:57,607 - Server started and listening on localhost:12345
+2025-02-10 22:54:59,687 - Connection from ('127.0.0.1', 61207)
+2025-02-10 22:54:59,687 - Closed connection with ('127.0.0.1', 61207)
+2025-02-10 22:55:33,711 - Server started and listening on localhost:12345
+2025-02-10 22:55:43,840 - Connection from ('127.0.0.1', 61238)
+2025-02-10 22:55:43,840 - Closed connection with ('127.0.0.1', 61238)
+2025-02-10 22:56:13,035 - Connection from ('127.0.0.1', 61277)
+2025-02-10 22:56:18,544 - Closed connection with ('127.0.0.1', 61277)
+2025-02-10 22:56:57,521 - Server started and listening on localhost:12345
+2025-02-10 22:57:00,688 - Connection from ('127.0.0.1', 61311)
+2025-02-10 22:57:03,183 - Closed connection with ('127.0.0.1', 61311)
+2025-02-10 22:58:15,629 - Server started and listening on localhost:12345
+2025-02-10 22:58:18,893 - Connection from ('127.0.0.1', 61373)
+2025-02-10 23:00:07,274 - Closed connection with ('127.0.0.1', 61373)
+2025-02-10 23:00:09,250 - Connection from ('127.0.0.1', 61441)
+2025-02-10 23:00:13,044 - Closed connection with ('127.0.0.1', 61441)
+2025-02-10 23:10:06,154 - Server started and listening on localhost:12345
+2025-02-10 23:10:07,795 - Connection from ('127.0.0.1', 61853)
+2025-02-10 23:10:10,756 - Received request: simple|wefewfew
+2025-02-10 23:11:23,151 - Connection from ('127.0.0.1', 61914)
+2025-02-10 23:11:25,795 - Received request: complex|gerngrnwe
+2025-02-10 23:17:02,776 - Connection from ('127.0.0.1', 62157)
+2025-02-10 23:17:07,681 - Received request: simple|wegewewge

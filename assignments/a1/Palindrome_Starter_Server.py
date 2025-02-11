@@ -45,8 +45,11 @@ def handle_client(client_socket, client_address):
 
 def process_request(request_data):
     """ Process the client's request and generate a response. """
-
-    # simple/complex|<message>
+   
+    # while True: # testing time out on client side
+    #     n = 0
+    
+    # `request_data`` in the form of: simple/complex|<message>
     check_type, input_string = request_data.split('|')  # separate words that have '|' between them -> gives us the 'checktype' -> simple or complex, and the message it self
     input_string = ''.join(e for e in input_string if e.isalnum()).lower()  # removes all special characters, spaces, and makes it all letters lower case
     isPalindrome = is_palindrome(input_string) # check if the input is a palindrome
@@ -61,17 +64,16 @@ def process_request(request_data):
 
         # If the string is not already a palindrome, compute complexity score
         canFormPalindrome, complexScore = palindrome_complex(input_string).split('|')   # return type will be: "True/False|Complexity Score"
-        if (canFormPalindrome == "True"):
+        if (canFormPalindrome == "True"):   # return a message with the `input_str` being able to turn into a palindrome, and its complexity score
             return f"Can form a palindrome: {canFormPalindrome}\nComplexity score: {complexScore} (number of swaps)"
         else:
-            return f"Impossible to form palindrome with `{input_string}`"
+            return f"Impossible to form a palindrome with `{input_string}`"
 
 def is_palindrome(input_string):
     """ Check if the given string is a palindrome. """
     return input_string == input_string[::-1]
 
 def palindrome_complex(input_str):
-    """ (COMPLEX) Check if the given string is a palindrome. """
     countOfCharactersMap = {}
     numSwaps = 0
     
@@ -80,8 +82,8 @@ def palindrome_complex(input_str):
         if char in countOfCharactersMap:
             countOfCharactersMap[char] += 1
         else:
-            countOfCharactersMap[char] = 1
-  
+            countOfCharactersMap[char] = 1 
+    
     foundOdd = False
     palindromePossible = True
     oddInstancedChar = ' '
@@ -112,9 +114,9 @@ def palindrome_complex(input_str):
                 indiciesOfOddNumberedChars.append(left)
             elif (input_str[right] == oddInstancedChar):
                 indiciesOfOddNumberedChars.append(right)
-            elif (left + 1 == right - 1 and input_str[left+1] == oddInstancedChar):
-                indiciesOfOddNumberedChars.append(left + 1)
-            
+            elif (left + 1 == right - 1 and input_str[left+1] == oddInstancedChar):    # case where the middle contains a odd instanced character
+                indiciesOfOddNumberedChars.append(left+1)
+        
         left += 1
         right -= 1
         
@@ -133,11 +135,7 @@ def palindrome_complex(input_str):
             if ((input_str[left] == middleCharToSwap or input_str[right] == middleCharToSwap) and input_str[left] != input_str[right]):
                 for indexOfOdd in indiciesOfOddNumberedChars:
                     # Do Swap
-                    # tmp = input_str[indexOfOdd]
-                    # input_str[indexOfOdd] = input_str[middleIndex]
-                    # input_str[middleIndex] = tmp
                     input_str = swapAtIndex(input_str, indexOfOdd, middleIndex)
-                    
                     
                     if (input_str[left] != input_str[right]):    # did swap, and it was not the most optimal, undo swap and check next
                         input_str = swapAtIndex(input_str, indexOfOdd, middleIndex)
@@ -199,6 +197,7 @@ def start_server():
             # Accept new client connections and start a thread for each client
             client_socket, client_address = server_socket.accept()
             threading.Thread(target=handle_client, args=(client_socket, client_address)).start() # include error checking for threads -> ex. terminate unexpectedly, or when server shuts down. 
-
+            # num = 0
+            
 if __name__ == '__main__':
     start_server()

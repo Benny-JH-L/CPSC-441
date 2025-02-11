@@ -9,11 +9,32 @@ SERVER_PORT = 12345
 # (for both serve/client?) -> see assignment details
 def start_client():
     """ Start the client and connect to the server. """
+    # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-        client_socket.connect((SERVER_HOST, SERVER_PORT))
+       
+        client_socket.settimeout(5) # set 5 second timeout
+        numConnectionTries = 0
+        connectedWithServer = False
         
+        # attempt a connection to the server
+        print("Connecting to server...")
+        while(numConnectionTries < 3 and not connectedWithServer):    # try 3 connection attempts
+            try:
+                client_socket.connect((SERVER_HOST, SERVER_PORT))
+                connectedWithServer = True  # server connected
+            except ConnectionRefusedError:          # connection timed out, try again
+                numConnectionTries += 1
+                print(f"Connection refused (Refused: {numConnectionTries})...")
+                if (numConnectionTries < 3):
+                    print("Retrying...")
+
+        # connection refused out 3 times
+        if (numConnectionTries >= 3):
+            print("Could not connect to server, exiting the client....")
+            return
+
         # Client interaction loop
-        while True:
+        while connectedWithServer:
             # Display the menu and get user input
             print("\nMenu:")
             print("1. Simple Palindrome Check")
@@ -21,10 +42,11 @@ def start_client():
             print("3. Exit")
             choice = input("Enter choice (1/2/3): ").strip()
 
+            message = ""
             if choice == '1':
                 input_string = input("Enter the string to check: ")
                 message = f"simple|{input_string}"
-                client_socket.send(message.encode())
+                # client_socket.send(message.encode())
                 
                 # # Wait for and display the server response
                 # response = client_socket.recv(1024).decode()
@@ -33,7 +55,7 @@ def start_client():
             elif choice == '2':
                 input_string = input("Enter the string to check: ")
                 message = f"complex|{input_string}"
-                client_socket.send(message.encode())
+                # client_socket.send(message.encode())
                 
                 # # Wait for and display the server response
                 # response = client_socket.recv(1024).decode()
@@ -43,9 +65,29 @@ def start_client():
                 print("Exiting the client...")
                 break
             
-            # Wait for and display the server response
-            response = client_socket.recv(1024).decode()
-            print(f"---Server response---\n{response}")
+            else:   # invalid choice, ask for another input
+                print(f"`{choice}` is an invalid choice...")
+                continue
+            
+            # send `message` and check for timeout errors
+            numTimeOuts = 0
+            while (numTimeOuts < 3):
+                try:
+                    client_socket.send(message.encode())
+                    # Wait for and display the server response
+                    response = client_socket.recv(1024).decode()
+                    print(f"---Server response---\n{response}")
+                    break
+                except socket.timeout:
+                    numTimeOuts += 1
+                    print(f"Server timeout ({numTimeOuts} timeouts)...")
+                    if (numTimeOuts < 3):
+                        print("Retying...")
+            
+            if (numTimeOuts >= 3):
+                print("Server timed out, exiting the client....")
+                return
 
+            
 if __name__ == "__main__":
     start_client()

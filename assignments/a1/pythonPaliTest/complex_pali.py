@@ -45,7 +45,9 @@ def complexPali(input_str):
                 indiciesOfOddNumberedChars.append(left)
             elif (input_str[right] == oddInstancedChar):
                 indiciesOfOddNumberedChars.append(right)
-            
+            elif (left + 1 == right - 1 and input_str[left+1] == oddInstancedChar):    # case where the middle contains a odd instanced character
+                indiciesOfOddNumberedChars.append(left+1)
+        
         left += 1
         right -= 1
         
@@ -64,11 +66,7 @@ def complexPali(input_str):
             if ((input_str[left] == middleCharToSwap or input_str[right] == middleCharToSwap) and input_str[left] != input_str[right]):
                 for indexOfOdd in indiciesOfOddNumberedChars:
                     # Do Swap
-                    # tmp = input_str[indexOfOdd]
-                    # input_str[indexOfOdd] = input_str[middleIndex]
-                    # input_str[middleIndex] = tmp
                     input_str = swapAtIndex(input_str, indexOfOdd, middleIndex)
-                    
                     
                     if (input_str[left] != input_str[right]):    # did swap, and it was not the most optimal, undo swap and check next
                         input_str = swapAtIndex(input_str, indexOfOdd, middleIndex)
@@ -82,7 +80,8 @@ def complexPali(input_str):
         
         # Case where we could not find the most optimal swap, swap arbitrarily the middle letter 
         # with an odd number of instances character that is not in an optimal position.
-        if (not foundOptimal):
+        # (Don't swap if middleIndex is already one of the odd instanced letters)
+        if (not foundOptimal and input_str[middleIndex] != oddInstancedChar):
             input_str = swapAtIndex(input_str, indiciesOfOddNumberedChars[0], middleIndex)
             numSwaps += 1
 
@@ -121,6 +120,8 @@ def testHelper(input_str, expectedNumSwaps):
     canMake, swaps = complexPali(input_str).split('|')
     print(input_str, "to pali takes:", swaps, "swaps | expected is", expectedNumSwaps, "| same:", (int(swaps) == expectedNumSwaps))
 
+
+
 testHelper("cbbici", 2)   # expected 2 swaps
 testHelper("ivicc", 2)
 testHelper("iiicccc", 2)
@@ -129,4 +130,5 @@ testHelper("iiikckaacc", -1)   # impossible
 testHelper("iciccci", 1)
 testHelper("icikkci", 1)
 testHelper("icikcki", 2)
+testHelper("ergergerger", 2)
 
