@@ -28,13 +28,13 @@ def start_client():
                 if (numConnectionTries < 3):
                     print("Retrying...")
 
-        # connection refused out 3 times
+        # connection refused 3 times
         if (numConnectionTries >= 3):
             print("Could not connect to server, exiting the client....")
             return
         
         print("Connected to server...")
-        # Client interaction loop
+        # Client interaction loop as long as client is still connected to the server
         while connectedWithServer:
             # Display the menu and get user input
             print("\nMenu:")
@@ -79,12 +79,16 @@ def start_client():
                     response = client_socket.recv(1024).decode()
                     print(f"---Server response---\n{response}")
                     break
-                except socket.timeout:
+                except socket.timeout:      # checking client timeout
                     numTimeOuts += 1
                     print(f"Server timeout ({numTimeOuts} timeouts)...")
-                    if (numTimeOuts < 3):
+                    if (numTimeOuts < 3):   # print `retying` to let client know another attempt is being made
                         print("Retying...")
-            
+                except ConnectionAbortedError:      # if the server closes the connection due to the client taking too long
+                    print("Took too long to respond, server closed connection...\nExiting....")
+                    connectedWithServer = False     # the client took to long to send a message and the server closed the connection
+                    break
+                
             if (numTimeOuts >= 3):
                 print("Server timed out, exiting the client....")
                 return
