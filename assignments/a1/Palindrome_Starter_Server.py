@@ -45,8 +45,10 @@ def handle_client(client_socket, client_address):
                 logging.info(f"Client {client_address} timeout ({numTimeouts} timeouts)... Waiting...")
                 print(f"Client {client_address} timeout ({numTimeouts} timeouts)... Waiting...")
         
-        logging.info(f"Max timeouts reached, closing connection with client {client_address}...")
-        print(f"Max timeouts reached, closing connection with client {client_address}...")
+        # print and log time out due to client not responding
+        if (numTimeouts >= 3):
+            logging.info(f"Max timeouts reached, closing connection with client {client_address}...")
+            print(f"Max timeouts reached, closing connection with client {client_address}...")
         
     finally:
         # Close the client connection
