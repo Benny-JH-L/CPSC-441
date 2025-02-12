@@ -96,6 +96,7 @@ def start_client():
                 print("Server timed out, exiting the client....")
                 return
 
+# simple cipher to encrypt/decrypt text
 def caesar_cipher(text):
     result = ""
     for char in text:
@@ -109,5 +110,4 @@ def caesar_cipher(text):
             
 if __name__ == "__main__":
     start_client()
-
 

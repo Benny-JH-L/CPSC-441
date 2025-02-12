@@ -4,7 +4,7 @@ import logging
 from collections import Counter
 
 # config for caeser cipher
-SHIFT = -7  # negate the `shift` value from client to get decrypted result 
+SHIFT = -7  # negate the `shift` value from client
 
 # Set up basic logging configuration
 logging.basicConfig(filename='server_log.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -96,6 +96,9 @@ def is_palindrome(input_string):
     """ Check if the given string is a palindrome. """
     return input_string == input_string[::-1]
 
+# finds the minimum number of swaps needed to convert `input_str` to a palindrome.
+# returns the number of swaps needed and if the `input_str` can be turned in to a palindrome,
+# in the form of a string: "<True/False>|<number of swaps>"
 def palindrome_complex(input_str):
     countOfCharactersMap = {}
     numSwaps = 0
@@ -109,9 +112,10 @@ def palindrome_complex(input_str):
     
     foundOdd = False
     palindromePossible = True
-    oddInstancedChar = ' '
+    oddInstancedChar = ' '      # save the character with an odd number of occurances
     
     # Go through letters and see if we have multiple letters with odd numbered occurances (a character has an odd number of instances).
+    # (check if its possible to turn the input into a palindrome)
     for chara, instances in countOfCharactersMap.items():
         
         if (instances % 2 == 1 and not foundOdd):
@@ -203,7 +207,7 @@ def palindrome_complex(input_str):
     
     return f"True|{numSwaps}"
 
-# Helper function to swap 2 characters of a string with given indicies 
+# Helper function to swap 2 characters in a string with given indicies 
 def swapAtIndex(input_str, index1, index2):
     input_str_list = list(input_str)        # turn string into a list
     input_str_list[index1], input_str_list[index2] = input_str_list[index2], input_str_list[index1]     # swap elements at indices
@@ -213,7 +217,7 @@ def start_server():
     """ Start the server and listen for incoming connections. """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((HOST, PORT))
-        server_socket.listen(5)
+        server_socket.listen(5)     # Listening to 5 clients
         logging.info(f"Server started and listening on {HOST}:{PORT}")
         print(f"Server started and listening on {HOST}:{PORT}")
         
@@ -222,6 +226,7 @@ def start_server():
             client_socket, client_address = server_socket.accept()
             threading.Thread(target=handle_client, args=(client_socket, client_address)).start() # include error checking for threads -> ex. terminate unexpectedly, or when server shuts down. 
 
+# simple cipher to encrypt/decrypt text
 def caesar_cipher(text):
     result = ""
     for char in text:
