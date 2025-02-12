@@ -120,7 +120,16 @@ def testHelper(input_str, expectedNumSwaps):
     canMake, swaps = complexPali(input_str).split('|')
     print(input_str, "to pali takes:", swaps, "swaps | expected is", expectedNumSwaps, "| same:", (int(swaps) == expectedNumSwaps))
 
-
+def caesar_cipher(text, shift):
+    result = ""
+    for char in text:
+        if char.isalpha():  # Check if it's a letter
+            shift_base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - shift_base + shift) % 26 + shift_base)
+        else:
+            result += char  # Keep non-alphabet characters unchanged
+    
+    return result
 
 testHelper("cbbici", 2)   # expected 2 swaps
 testHelper("ivicc", 2)
@@ -132,3 +141,11 @@ testHelper("icikkci", 1)
 testHelper("icikcki", 2)
 testHelper("ergergerger", 2)
 
+# caeser cipher test
+shift = 7
+c1 = caesar_cipher("ivicc", shift)
+c2 = caesar_cipher("ivicc12132", shift)
+print(c1)
+print(c2)
+print(caesar_cipher(c1, -shift))
+print(caesar_cipher(c2, -shift))

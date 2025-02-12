@@ -3,6 +3,9 @@ import threading
 import logging
 from collections import Counter
 
+# config for caeser cipher
+SHIFT = -7  # negate the `shift` value from client to get decrypted result 
+
 # Set up basic logging configuration
 logging.basicConfig(filename='server_log.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
 
@@ -26,6 +29,9 @@ def handle_client(client_socket, client_address):
             try:
                 # Receive data from the client
                 request_data = client_socket.recv(1024).decode()
+                # log data recieved from specific client
+                logging.info(f"Data recieved: <{request_data}> from {client_address}")
+                print(f"Data recieved: <{request_data}> from {client_address}")
                 
                 if not request_data:  # Client has closed the connection
                     logging.info(f"Client {client_address} disconnected...")
@@ -35,10 +41,11 @@ def handle_client(client_socket, client_address):
                 numTimeouts = 0 # reset count 
                 
                 response = process_request(request_data)
+                response = caesar_cipher(response)          # encrypt `response` before sending it to the client
                 client_socket.send(response.encode())
                 
-                logging.info(f"Sent response: <{response}> to {client_address}")
-                print(f"Sent response: <{response}> to {client_address}")
+                logging.info(f"Sent response (encrypted): <{response}> to {client_address}")
+                print(f"Sent response (encrypted): <{response}> to {client_address}")
 
             except socket.timeout:
                 numTimeouts += 1
@@ -66,8 +73,9 @@ def process_request(request_data):
     
     # `request_data`` in the form of: simple/complex|<message>
     check_type, input_string = request_data.split('|')  # separate words that have '|' between them -> gives us the 'checktype' -> simple or complex, and the message it self
+    input_string = caesar_cipher(input_string)          # decrypt the `input_string`
     input_string = ''.join(e for e in input_string if e.isalnum()).lower()  # removes all special characters, spaces, and makes it all letters lower case
-    isPalindrome = is_palindrome(input_string) # check if the input is a palindrome
+    isPalindrome = is_palindrome(input_string)          # check if the input is a palindrome
     
     if check_type == 'simple':
         return f"Is palindrome: {isPalindrome}"
@@ -204,7 +212,6 @@ def swapAtIndex(input_str, index1, index2):
 def start_server():
     """ Start the server and listen for incoming connections. """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        # server_socket.settimeout(5)         # set 5 second time out
         server_socket.bind((HOST, PORT))
         server_socket.listen(5)
         logging.info(f"Server started and listening on {HOST}:{PORT}")
@@ -214,6 +221,17 @@ def start_server():
             # Accept new client connections and start a thread for each client
             client_socket, client_address = server_socket.accept()
             threading.Thread(target=handle_client, args=(client_socket, client_address)).start() # include error checking for threads -> ex. terminate unexpectedly, or when server shuts down. 
-            
+
+def caesar_cipher(text):
+    result = ""
+    for char in text:
+        if char.isalpha():  # Check if it's a letter
+            shift_base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - shift_base + SHIFT) % 26 + shift_base)
+        else:
+            result += char  # Keep non-alphabet characters unchanged
+    
+    return result
+
 if __name__ == '__main__':
     start_server()

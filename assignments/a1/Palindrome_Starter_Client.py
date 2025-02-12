@@ -1,5 +1,8 @@
 import socket
 
+# config for caeser cipher
+SHIFT = 7
+
 # Server configuration
 SERVER_HOST = 'localhost'
 SERVER_PORT = 12345
@@ -43,14 +46,18 @@ def start_client():
             print("3. Exit")
             choice = input("Enter choice (1/2/3): ").strip()
 
-            message = ""
+            checkType = ""
+            input_string = ""
+
             if choice == '1':
                 input_string = input("Enter the string to check: ")
-                message = f"simple|{input_string}"
+                checkType = "simple"
+                # message = f"simple|{input_string}"
                 
             elif choice == '2':
                 input_string = input("Enter the string to check: ")
-                message = f"complex|{input_string}"
+                checkType = "complex"
+                # message = f"complex|{input_string}"
                 
             elif choice == '3':
                 print("Exiting the client...")
@@ -64,9 +71,14 @@ def start_client():
             numTimeOuts = 0
             while (numTimeOuts < 3):
                 try:
+                    input_string = caesar_cipher(input_string)  # encrypt `input_string``
+                    message = f"{checkType}|{input_string}"     
                     client_socket.send(message.encode())
+                    
                     # Wait for and display the server response
                     response = client_socket.recv(1024).decode()
+                    response = caesar_cipher(response)  # decrypt `response` from server
+                    
                     print(f"---Server response---\n{response}")
                     break
                 except socket.timeout:      # checking client timeout
@@ -84,6 +96,18 @@ def start_client():
                 print("Server timed out, exiting the client....")
                 return
 
+def caesar_cipher(text):
+    result = ""
+    for char in text:
+        if char.isalpha():  # Check if it's a letter
+            shift_base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - shift_base + SHIFT) % 26 + shift_base)
+        else:
+            result += char  # Keep non-alphabet characters unchanged
+    
+    return result
             
 if __name__ == "__main__":
     start_client()
+
+

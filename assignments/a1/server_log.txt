@@ -1,7 +1,0 @@
-2025-02-11 23:10:22,802 - Server started and listening on localhost:12345
-2025-02-11 23:10:26,035 - Connection from ('127.0.0.1', 57169)
-2025-02-11 23:10:28,169 - Connection from ('127.0.0.1', 57172)
-2025-02-11 23:10:30,117 - Sent response: <Impossible to form a palindrome with `ergopiknhreigbnwreg`> to ('127.0.0.1', 57172)
-2025-02-11 23:10:31,044 - Client ('127.0.0.1', 57169) timeout (1 timeouts)... Waiting...
-2025-02-11 23:10:33,858 - Sent response: <Is palindrome: False> to ('127.0.0.1', 57169)
-2025-02-11 23:10:35,121 - Client ('127.0.0.1', 57172) timeout (1 timeouts)... Waiting...
