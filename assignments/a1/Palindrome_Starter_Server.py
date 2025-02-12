@@ -37,7 +37,7 @@ def handle_client(client_socket, client_address):
                 response = process_request(request_data)
                 client_socket.send(response.encode())
                 
-                logging.info(f"Sent response: {response} to {client_address}")
+                logging.info(f"Sent response: <{response}> to {client_address}")
                 print(f"Sent response: <{response}> to {client_address}")
 
             except socket.timeout:
