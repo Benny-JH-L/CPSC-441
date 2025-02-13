@@ -159,7 +159,7 @@ int main()
     testHelper("icikkci", 1);
     testHelper("icikcki", 2); 
     testHelper("ergergerger", 2); 
-    testHelper("erbwerhwh", -10); // is it 3?
+    testHelper("erbwerhwh", 3);     // yup 3 swaps :)
     return 0;
 }
 

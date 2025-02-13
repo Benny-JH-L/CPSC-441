@@ -1,3 +1,7 @@
+
+# Assignment 1: Advanced Palindrome Check Server-Client Application
+#     CPSC 441 Winter 2025 | Benny Liang | 30192142
+
 import socket
 
 # config for caeser cipher
