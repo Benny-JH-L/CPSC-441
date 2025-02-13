@@ -17,9 +17,6 @@ logging.basicConfig(filename='server_log.txt', level=logging.INFO, format='%(asc
 HOST = 'localhost'
 PORT = 12345
 
-# handle connection, data transmisson (issues during data send/recieve, such as broken pipes or timeouts), and invalid input (ex. NO NUMBERS, empty string), errors 
-# display messages to enhance user experience 
-# (for both serve/client?) -> see assignment details
 def handle_client(client_socket, client_address):
     """ Handle incoming client requests. """
     logging.info(f"Connection from {client_address}")

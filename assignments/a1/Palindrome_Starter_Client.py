@@ -11,9 +11,6 @@ SHIFT = 7
 SERVER_HOST = 'localhost'
 SERVER_PORT = 12345
 
-# handle connection, data transmisson (issues during data send/recieve, such as broken pipes or timeouts), and invalid input (ex. NO NUMBERS, empty string), errors 
-# display messages to enhance user experience 
-# (for both serve/client?) -> see assignment details
 def start_client():
     """ Start the client and connect to the server. """
     # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
