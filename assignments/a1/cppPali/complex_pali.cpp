@@ -5,8 +5,16 @@
 
 using namespace std;
 
+void toLowerCase(std::string &str) {
+    for (char &c : str) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+}
+
 int complexPali(string input)
 {
+    toLowerCase(input);
+
     unordered_map<char, int> countOfCharactersMap; // `char` is key, `int` is value (number of times the `char` occures in the `input`)
     int numSwaps = 0;
 
@@ -150,6 +158,7 @@ int main()
     // string s = "iiikckaac";
     // cout << s.length()/2 << endl;
 
+    testHelper("civic", 0);
     testHelper("cbbici", 2);   // expected 2 swaps
     testHelper("ivicc", 2);
     testHelper("iiicccc", 2);
@@ -160,8 +169,17 @@ int main()
     testHelper("icikcki", 2); 
     testHelper("ergergerger", 2); 
     testHelper("erbwerhwh", 3);     // yup 3 swaps :)
+    testHelper("aaukispiiavupippkSa", 7);
+
+    vector<string> strings = {
+    "a", "abb", "maacc", "aacc", "aamcc", "aacabcacc", "aaukispiiavupippksa", \
+    "wjklkabhhpgcdmdchphgmwbajlkk", "hhpgcdmdchphgm", "hhpgmhphgm", "aaukispiiavupippkSa"};
+    vector<int> expected = {0, 1, 2, 1, 1, 2, 7, 10, 5, 3, 7};
+    for (int i = 0; i < strings.size(); i++)
+        testHelper(strings[i], expected[i]);
+    
+    // Note: You should try to do them manually and see what u get, then compare
+    // (test cases in vector were from a friend)
     return 0;
 }
-
-
 
