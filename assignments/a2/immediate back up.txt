@@ -1,47 +1,14 @@
 import socket
 import threading
-import os
-import random
 import time
 from urllib.parse import urlparse
 
 # Configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 8080         # Port to run the proxy on
-DELAY = 1.0         # Delay in seconds per chunk of data
+DELAY = 0.01         # Delay in seconds per chunk of data
+# DELAY = 1.0         # Delay in seconds per chunk of data
 CHUNK_SIZE = 1024   # Size of data chunks to send
-
-MEME_FOLDER = 'memes'
-EASTER_EGG_URL = 'http://google.ca'
-
-# Load memes from the folder
-MEMES = [os.path.join(MEME_FOLDER, f) for f in os.listdir(MEME_FOLDER) if f.endswith(('.jpg', '.png', '.gif'))]
-
-# checks if b`message` is a header with an Content-Type: image, 
-# if it is then it injects the meme
-def injectMeme(message):
-    if not (b'HTTP' in message):
-        return message
-    
-    headerValues, body = message.split(b'\r\n\r\n', 1)
-
-    # headerValues = message.split(b'\r\n')
-    
-    print(f"\nHeader values:\n{headerValues}")    # debug
-    
-    if random.choice([True, False]):  # Replace 50% of images
-        meme = random.choice(MEMES)
-        with open(meme, 'rb') as f:
-            meme_data = f.read()
-    
-            injected_content_type = b'Content-Type: '
-            injected_content_length = b'' + + str(len(meme_data))
-            headerValues.replace(b'Content-Type: ', injected_content_type)
-            headerValues.replace(b'Content-Length: ', injected_content_length)
-            
-    
-    return headerValues + body
-    
 
 def handle_client(client_socket):
     request = client_socket.recv(4096)
@@ -59,13 +26,20 @@ def handle_client(client_socket):
 
         remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         remote_socket.connect((host, port))
+        # remote_socket.connect((host, 80)) # Use port 80 to not encrypt data.
         remote_socket.send(request)  # Forward the original request
 
+        # print(f"Used port: {port}") # debug
+    
         while True:
             response = remote_socket.recv(CHUNK_SIZE)
             if not response:
                 break
-
+            
+            # print(f"\n--Web server response: \n{response.decode()}") # will spam a lot (this will show HTML attributes i believe)
+            print(f"\n--Web server response:\n{response}") # will spam a lot
+            # print(f"\n--Web server response:\n{response.decode('utf-8')}") # does the same thing as use decode().
+            
             if b'HTTP/1.1 301' in response:
                 headers = response.split(b'\r\n')
                 for header in headers:
@@ -74,20 +48,14 @@ def handle_client(client_socket):
                         print(f"Redirecting to {new_url.decode('utf-8')}")
                         return handle_client(client_socket)  # Recursive call with new URL
                         
-            # if (b'Content-Type' in response):
-            #     print(f"\n---Content-Type: \n{response}")
-            
-            response = injectMeme(response)
             client_socket.send(response)  # Forward to client
-            
-            # time.sleep(DELAY)  # Slow down response
+            time.sleep(DELAY)  # Slow down response
 
         remote_socket.close()
     except Exception as e:
         print(f"Error: {e}")
 
     client_socket.close()
-
 
 
 def start_proxy():
@@ -106,4 +74,3 @@ def start_proxy():
 
 if __name__ == "__main__":
     start_proxy()
-

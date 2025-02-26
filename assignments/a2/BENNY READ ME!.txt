@@ -7,3 +7,21 @@ The proxy server will intercept the user's request to the site, and from the pro
 send the users' request to the site and recieve the data, but in the proxy server it will replace
 half of the original images with meme images that is chosen randomly. 
 
+// CHECK FOR HEADERS!
+
+check if the headers' Content-Type is:
+Content-Type: image/<image extention>
+    - if it is, replace it with our meme's extention type and then
+    replace headers' Content-Length: <length>, with the meme's data. (should be a data() function u can all on meme) 
+
+For example:
+Orignial header: 
+    - "Content-Type: image/png"
+    - "Content-Length: 1234"
+Altered header:
+    - "Content-Type: image/jpeg"
+    - "Content-Length: 420420"
+
+// use this site to see replacements better
+http://www.pics4learning.com/
+
