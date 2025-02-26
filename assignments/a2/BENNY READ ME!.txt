@@ -1,0 +1,9 @@
+
+For a2 we are ONLY building a proxy server, (idk maybe a client server is needed).
+
+This proxy server will listen to ONLY HTTP requests (to sites), from a web browser (use firefox).
+
+The proxy server will intercept the user's request to the site, and from the proxy server it will 
+send the users' request to the site and recieve the data, but in the proxy server it will replace
+half of the original images with meme images that is chosen randomly. 
+
