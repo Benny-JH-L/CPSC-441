@@ -1,27 +1,17 @@
 import socket
 import threading
 import time
-import random
-import os
 from urllib.parse import urlparse
-
-import logging
 
 # Configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 8080         # Port to run the proxy on
-DELAY = 0.1         # Delay in seconds per chunk of data
+DELAY = 0.25         # Delay in seconds per chunk of data
+# DELAY = 1.0         # Delay in seconds per chunk of data
 CHUNK_SIZE = 1024   # Size of data chunks to send
-MEME_FOLDER = 'meme_folder'  # Folder containing memes
 
-# Get a list of memes in the meme folder
-memes = [os.path.join(MEME_FOLDER, meme) for meme in os.listdir(MEME_FOLDER) if meme.lower().endswith(('jpg', 'jpeg', 'png'))]
-
-logging.basicConfig(filename='log_server.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-def handle_client(client_socket, client_addr):
+def handle_client(client_socket):
     request = client_socket.recv(4096)
-    # print(f"Recieved request: <{request}> \n\tFrom client: {client_addr}")
     try:
         first_line = request.split(b'\r\n')[0]
         url = first_line.split(b' ')[1]
@@ -36,14 +26,19 @@ def handle_client(client_socket, client_addr):
 
         remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         remote_socket.connect((host, port))
+        # remote_socket.connect((host, 80)) # Use port 80 to not encrypt data.
         remote_socket.send(request)  # Forward the original request
-        
+
+        print(f"Used port: {port}")
+    
         while True:
             response = remote_socket.recv(CHUNK_SIZE)
-            print(f"Received response from site: {host}")
-
             if not response:
                 break
+            
+            # print(f"\n--Web server response: \n{response.decode()}") # will spam a lot (this will show HTML attributes i believe)
+            print(f"\n--Web server response:\n{response}") # will spam a lot
+            # print(f"\n--Web server response:\n{response.decode('utf-8')}") # does the same thing as use decode().
             
             if b'HTTP/1.1 301' in response:
                 headers = response.split(b'\r\n')
@@ -52,30 +47,7 @@ def handle_client(client_socket, client_addr):
                         new_url = header.split(b'Location: ')[1].strip()
                         print(f"Redirecting to {new_url.decode('utf-8')}")
                         return handle_client(client_socket)  # Recursive call with new URL
-            
-            # If there is an image in the response, replace half of them with memes
-            elif b'image' in response:
-                # Check if the response contains the "Content-Type: image/..." header
-                if b'Content-Type: image' in response:
-                    # Randomly decide whether to replace the image
-                    if random.random() < 0.5 and memes:
-                        # Select a random meme from the folder
-                        meme_file = random.choice(memes)
-                        with open(meme_file, 'rb') as meme:
-                            meme_data = meme.read()
-
-                        # Find the boundaries of the image content in the response
-                        start_idx = response.find(b'\r\n\r\n') + 4  # Start of the body (after headers)
-                        end_idx = len(response)  # The end of the response is the end of the body
-
-                        # Replace the image content with meme content
-                        modified_response = response[:start_idx] + meme_data
-
-                        # Send the modified response to the client
-                        client_socket.send(modified_response)
-                        continue  # Skip sending the original image response
-
-            # If the response is not an image or was not replaced, forward it as is
+                        
             client_socket.send(response)  # Forward to client
             time.sleep(DELAY)  # Slow down response
 
@@ -85,8 +57,9 @@ def handle_client(client_socket, client_addr):
 
     client_socket.close()
 
+
 def start_proxy():
-    print(f"Server proxy running on {HOST}:{PORT}, with a delay of {DELAY} seconds per {CHUNK_SIZE} bytes.")
+    print(f"Sloxy running on {HOST}:{PORT}, with a delay of {DELAY} seconds per {CHUNK_SIZE} bytes.")
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -96,8 +69,7 @@ def start_proxy():
     while True:
         client_socket, addr = server_socket.accept()
         print(f"Connection from {addr}")
-        logging.info(f"Connection from {addr}")
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
         client_handler.start()
 
 if __name__ == "__main__":

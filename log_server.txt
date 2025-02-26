@@ -1,0 +1,36 @@
+2025-02-25 22:53:27,184 - Server proxy started on 127.0.0.1:8080
+2025-02-25 22:53:27,186 - Created meme folder at meme_folder - please add image files
+2025-02-25 22:53:38,009 - Connection from ('127.0.0.1', 65134)
+2025-02-25 22:53:38,012 - Received request from client: ('127.0.0.1', 65134)
+2025-02-25 22:54:54,184 - Connection from ('127.0.0.1', 65183)
+2025-02-25 22:54:54,185 - Received request from client: ('127.0.0.1', 65183)
+2025-02-25 22:54:54,185 - Error: list index out of range
+2025-02-25 22:54:54,777 - Connection from ('127.0.0.1', 65187)
+2025-02-25 22:54:54,778 - Connection from ('127.0.0.1', 65188)
+2025-02-25 22:54:54,780 - Connection from ('127.0.0.1', 65189)
+2025-02-25 22:54:55,083 - Received request from client: ('127.0.0.1', 65187)
+2025-02-25 22:55:00,313 - Received request from client: ('127.0.0.1', 65189)
+2025-02-25 22:55:00,313 - Received request from client: ('127.0.0.1', 65188)
+2025-02-25 22:55:00,313 - Error: list index out of range
+2025-02-25 22:55:00,313 - Error: list index out of range
+2025-02-25 22:55:55,772 - Connection from ('127.0.0.1', 65231)
+2025-02-25 22:55:55,772 - Received request from client: ('127.0.0.1', 65231)
+2025-02-25 22:56:30,264 - Connection from ('127.0.0.1', 65247)
+2025-02-25 22:56:30,264 - Received request from client: ('127.0.0.1', 65247)
+2025-02-25 22:56:30,264 - Error: list index out of range
+2025-02-25 22:56:46,383 - Connection from ('127.0.0.1', 65255)
+2025-02-25 22:56:46,384 - Connection from ('127.0.0.1', 65256)
+2025-02-25 22:56:46,384 - Connection from ('127.0.0.1', 65257)
+2025-02-25 22:56:50,361 - Received request from client: ('127.0.0.1', 65255)
+2025-02-25 22:56:51,596 - Received request from client: ('127.0.0.1', 65257)
+2025-02-25 22:56:51,596 - Error: list index out of range
+2025-02-25 22:56:51,596 - Received request from client: ('127.0.0.1', 65256)
+2025-02-25 22:56:51,596 - Error: list index out of range
+2025-02-25 22:58:42,030 - Server proxy started on 127.0.0.1:8080
+2025-02-25 22:58:46,980 - Connection from ('127.0.0.1', 65337)
+2025-02-25 22:58:46,984 - Received request from client: ('127.0.0.1', 65337)
+2025-02-25 22:58:47,480 - Connection from ('127.0.0.1', 65339)
+2025-02-25 22:58:48,376 - Received request from client: ('127.0.0.1', 65339)
+2025-02-25 22:59:48,961 - Connection from ('127.0.0.1', 65402)
+2025-02-25 22:59:48,961 - Received request from client: ('127.0.0.1', 65402)
+2025-02-25 22:59:53,834 - Error: [WinError 10053] An established connection was aborted by the software in your host machine
