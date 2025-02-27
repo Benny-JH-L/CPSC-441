@@ -3,6 +3,7 @@ import threading
 import os
 import random
 import time
+from pathlib import Path
 from urllib.parse import urlparse
 
 # Configuration
@@ -11,11 +12,67 @@ PORT = 8080         # Port to run the proxy on
 DELAY = 1.0         # Delay in seconds per chunk of data
 CHUNK_SIZE = 1024   # Size of data chunks to send
 
-MEME_FOLDER = 'memes'
+MEME_FOLDER_NAME = 'memes'
 EASTER_EGG_URL = 'http://google.ca'
+LIST_OF_MEME_NAMES = [] # List of meme file names inside the `MEME_FOLDER_NAME`
+LIST_OF_MEME_PATHS = [] # Path to the meme
 
 # Load memes from the folder
-MEMES = [os.path.join(MEME_FOLDER, f) for f in os.listdir(MEME_FOLDER) if f.endswith(('.jpg', '.png', '.gif'))]
+# # MEMES = [os.path.join(MEME_FOLDER, f) for f in os.listdir(MEME_FOLDER) if f.endswith(('.jpg', '.png', '.gif'))]
+# MEMES = [os.path.join(MEME_FOLDER, item) for item in os.listdir()]
+# # MEMES = [item.resolve() for item in MEME_FOLDER.iterdir()]
+
+def find_memes_folder(start_path="."):
+    for root, dirs, files in os.walk(start_path):
+        if MEME_FOLDER_NAME in dirs:  # Found the "memes" folder
+            return os.path.join(root, MEME_FOLDER_NAME)
+    return None  # Return None if not found
+
+# Gives the whole image path
+# def get_images_from_folder(folder_path):
+#     image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+#     return [
+#         os.path.join(folder_path, file)
+#         for file in os.listdir(folder_path)
+#         if os.path.splitext(file)[1].lower() in image_extensions
+#     ]
+
+# Find the "memes" folder starting from the current directory
+# memes_folder = find_memes_folder(".")
+# print(get_images_from_folder(memes_folder))
+
+def get_image_names(folder_path):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+    return [
+        file for file in os.listdir(folder_path)
+        if os.path.splitext(file)[1].lower() in image_extensions
+    ]
+
+# Find the "memes" folder starting from the current directory
+memes_folder = find_memes_folder(".")
+print(get_image_names(memes_folder))
+
+
+
+# def find_memes_folder(start_path=Path(".")):
+#     for folder in start_path.rglob("memes"):
+#         if folder.is_dir():
+#             return folder
+#     return None
+
+# def get_images_from_folder(folder_path):
+#     image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+#     return [file.resolve() for file in folder_path.iterdir() if file.suffix.lower() in image_extensions]
+
+# # Find the "memes" folder
+# memes_folder = find_memes_folder()
+
+# if memes_folder:
+#     images = get_images_from_folder(memes_folder)
+#     print("Images found:", images)
+# else:
+#     print("Memes folder not found.")
+
 
 # checks if b`message` is a header with an Content-Type: image, 
 # if it is then it injects the meme
@@ -34,13 +91,17 @@ def injectMeme(message):
         with open(meme, 'rb') as f:
             meme_data = f.read()
     
-            injected_content_type = b'Content-Type: '
-            injected_content_length = b'' + + str(len(meme_data))
-            headerValues.replace(b'Content-Type: ', injected_content_type)
-            headerValues.replace(b'Content-Length: ', injected_content_length)
+            injected_content_type = b'Content-Type: image/' + b'png'
+            injected_content_length = b'' + str(len(meme_data))
+            headerValues.replace(headerValues[1], injected_content_type)        # replace the `Content-Type`
+            headerValues.replace(headerValues[3], injected_content_length)      # replace the `Content-Length`
             
+            print(f'\nheader value[1] = \n{headerValues[1].decode()}')
+            print(f'header value[3] = \n{headerValues[3].decode()}')
+            
+        print(f"\n--Inject header values:\n{headerValues}") # debug
     
-    return headerValues + body
+    return headerValues + b'\r\n\r\n' + body
     
 
 def handle_client(client_socket):
