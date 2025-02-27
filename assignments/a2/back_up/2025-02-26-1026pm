@@ -5,7 +5,6 @@ import random
 import time
 from pathlib import Path
 from urllib.parse import urlparse
-import base64
 
 # Configuration
 HOST = '127.0.0.1'  # Localhost
@@ -15,9 +14,10 @@ CHUNK_SIZE = 1024   # Size of data chunks to send
 
 MEME_FOLDER_NAME = 'memes'
 MEME_FOLDER_PATH = ""
-EASTER_EGG_URL = b'http://google.ca/'
+EASTER_EGG_URL = 'http://google.ca'
 LIST_OF_MEME_NAMES = [] # List of meme file names inside the `MEME_FOLDER_NAME`
 LIST_OF_MEME_PATHS = [] # Path to the meme (not sure if needed)
+# REPLACED_IMAGE = False
 
 def find_memes_folder(start_path="."):
     for root, dirs, files in os.walk(start_path):
@@ -48,43 +48,30 @@ def injectMeme(message):
         return message
     
     header, body = message.split(b'\r\n\r\n', 1)
-    headerValues = header.split(b'\r\n')
+
+    headerValues = message.split(b'\r\n')
     
-    print(f"\nHeader:\n{header.decode()}")    # debug
-    print(f"\nBody:\n{body.decode()}")
+    print(f"\nHeader:\n{header}")    # debug
     
-    try:
-        if b'Content-Type: image' in header: #and random.choice([True, False]):  # Replace 50% of images
-            # should_replace = random.choice([True, False])
-            # print(f"Should replace image: {should_replace}")  # Debug
-            # if should_replace:
-            if random.random() < 0.5:
-                meme_path = random.choice(LIST_OF_MEME_PATHS)
-                print(f"Replacing with meme: {meme_path}")  # Debug
-                
-                with open(meme_path, 'rb') as f:
-                    meme_data = f.read()
+    # if random.choice([True, False]):  # Replace 50% of images
+    if not REPLACED_IMAGE:  # Replace 50% of images
+        meme_path = random.choice(LIST_OF_MEME_PATHS)
+        with open(meme_path, 'rb') as f:
+            meme_data = f.read()
+    
+            injected_content_type = 'Content-Type: image/' + 'png'    # need to make it work with any extention
+            injected_content_length = str(len(meme_data))
+            header.replace(headerValues[1], injected_content_type.encode())        # replace the `Content-Type`
+            header.replace(headerValues[3], injected_content_length.encode())      # replace the `Content-Length`
             
-                    injected_content_type = b'Content-Type: image/' + os.path.splitext(meme_path)[1][1:].encode()  # Get the extension
-                    injected_content_length = b'Content-Length: ' + str(len(meme_data)).encode()
-                    
-                    # Replace the `Content-Type` and `Content-Length` headers
-                    headerValues = [injected_content_type if b'Content-Type:' in line else line for line in headerValues]
-                    headerValues = [injected_content_length if b'Content-Length:' in line else line for line in headerValues]
-                    
-                    header = b'\r\n'.join(headerValues)
-                    
-                    print(f'\nheader value[2] = \n{headerValues[2].decode()}')
-                    print(f'header value[3] = \n{headerValues[3].decode()}')
-                    
-                    print(f"\n--Inject header values:\n{header.decode()}") # debug
-                    print(f"\n--Inject Body:\n{meme_data.decode()}")
-                    
-                    return header + b'\r\n\r\n' + meme_data
-    except Exception as e:
-        print("[ERROR IN INJECT MEME]", e)
-        
+            print(f'\nheader value[1] = \n{headerValues[1].decode()}')
+            print(f'header value[3] = \n{headerValues[3].decode()}')
+        REPLACED_IMAGE = True
+            
+        print(f"\n--Inject header values:\n{header}") # debug
+    
     return header + b'\r\n\r\n' + body
+    
 
 def handle_client(client_socket):
     request = client_socket.recv(4096)
@@ -92,10 +79,6 @@ def handle_client(client_socket):
         first_line = request.split(b'\r\n')[0]
         url = first_line.split(b' ')[1]
         parsed_url = urlparse(url.decode('utf-8'))
-
-        if url == EASTER_EGG_URL:
-            send_easter_egg(client_socket)
-            return
 
         host = parsed_url.hostname
         path = parsed_url.path + '?' + parsed_url.query if parsed_url.query else parsed_url.path
@@ -108,7 +91,6 @@ def handle_client(client_socket):
         remote_socket.connect((host, port))
         remote_socket.send(request)  # Forward the original request
 
-        buffered = b''
         while True:
             response = remote_socket.recv(CHUNK_SIZE)
             if not response:
@@ -126,32 +108,16 @@ def handle_client(client_socket):
             #     print(f"\n---Content-Type: \n{response}")
             
             response = injectMeme(response)
-            buffered += response
-            # client_socket.send(response)  # Forward to client
+            client_socket.send(response)  # Forward to client
             
-        client_socket.send(buffered)  # Forward to client
+            # time.sleep(DELAY)  # Slow down response
+
         remote_socket.close()
     except Exception as e:
         print(f"Error: {e}")
 
     client_socket.close()
 
-def send_easter_egg(client_socket):
-    html = """
-    HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n
-    <html>
-    <head><title>Surprise!</title></head>
-    <body>
-        <h1>You've discovered the Easter Egg!</h1>
-        <img src='data:image/png;base64,{0}' width='100%' />
-    </body>
-    </html>
-    """
-    meme_path = random.choice(LIST_OF_MEME_PATHS)
-    with open(meme_path, "rb") as meme_file:
-        encoded_meme = base64.b64encode(meme_file.read()).decode('utf-8')
-    client_socket.sendall(html.format(encoded_meme).encode())
-    client_socket.close()
 
 
 def start_proxy():
@@ -174,5 +140,6 @@ if __name__ == "__main__":# Find the "memes" folder starting from the current di
     LIST_OF_MEME_PATHS = get_images_paths_from_folder(MEME_FOLDER_PATH)
     print("\nImage names:\n", LIST_OF_MEME_NAMES) # debug
     print("\nImage paths:\n",LIST_OF_MEME_PATHS) # debug
+    REPLACED_IMAGE = False
     start_proxy()
 
