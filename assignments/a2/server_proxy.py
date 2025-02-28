@@ -18,6 +18,7 @@ MEME_FOLDER_PATH = ""
 EASTER_EGG_URL = b'http://google.ca/'
 LIST_OF_MEME_NAMES = [] # List of meme file names inside the `MEME_FOLDER_NAME`
 LIST_OF_MEME_PATHS = [] # Path to the meme (not sure if needed)
+SHOULD_REPLACE = True
 
 def find_memes_folder(start_path="."):
     for root, dirs, files in os.walk(start_path):
@@ -57,9 +58,12 @@ def injectMeme(message):
         if b'Content-Type: image' in header: #and random.choice([True, False]):  # Replace 50% of images
             # should_replace = random.choice([True, False])
             # print(f"Should replace image: {should_replace}")  # Debug
-            # if should_replace:
-            if random.random() < 0.5:
-                meme_path = random.choice(LIST_OF_MEME_PATHS)
+            if SHOULD_REPLACE:
+                SHOULD_REPLACE = False 
+            # if random.random() < 0.5:
+                randIndex = random.randint(0, len(LIST_OF_MEME_PATHS))
+                # meme_path = random.choice(LIST_OF_MEME_PATHS)
+                meme_path = LIST_OF_MEME_PATHS[randIndex]
                 print(f"Replacing with meme: {meme_path}")  # Debug
                 
                 with open(meme_path, 'rb') as f:
@@ -81,6 +85,9 @@ def injectMeme(message):
                     print(f"\n--Inject Body:\n{meme_data.decode()}")
                     
                     return header + b'\r\n\r\n' + meme_data
+            else:
+                SHOULD_REPLACE = True   # Set replace next image
+                
     except Exception as e:
         print("[ERROR IN INJECT MEME]", e)
         
