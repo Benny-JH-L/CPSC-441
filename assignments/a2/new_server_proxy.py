@@ -1,143 +1,98 @@
 
+import socket
+import threading
+import os
+import random
+from urllib.parse import urlparse
 
-# # takes in the entire message that was send from the site (ie the whole site),
-# # and replaces half of the images to memes
-# def injectMeme(wholeMessage):
+# Configuration
+HOST = '127.0.0.1'  # Localhost
+PORT = 8080         # Port to run the proxy on
+DELAY = 1.0         # Delay in seconds per chunk of data
+CHUNK_SIZE = 1024   # Size of data chunks to send
+
+MEME_FOLDER_NAME = 'memes'
+MEME_FOLDER_PATH = ""
+EASTER_EGG_URL = b'http://google.ca/'
+LIST_OF_MEME_NAMES = [] # List of meme file names inside the `MEME_FOLDER_NAME`
+LIST_OF_MEME_PATHS = [] # Path to the meme (not sure if needed)
+REPLACE_WITH_MEME = True
+
+
+def find_memes_folder(start_path="."):
+    for root, dirs, files in os.walk(start_path):
+        if MEME_FOLDER_NAME in dirs:  # Found the "memes" folder
+            return os.path.join(root, MEME_FOLDER_NAME)
+    return None  # Return None if not found
+
+# Gives the whole image path
+def get_images_paths_from_folder(folder_path):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+    return [
+        os.path.join(folder_path, file)
+        for file in os.listdir(folder_path)
+        if os.path.splitext(file)[1].lower() in image_extensions
+    ]
+
+def get_image_names_from_folder(folder_path):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+    return [
+        file for file in os.listdir(folder_path)
+        if os.path.splitext(file)[1].lower() in image_extensions
+    ]
+
+
+def handle_client(client_socket):
+    request = client_socket.recv(4096)
+    try:
+        first_line = request.split(b'\r\n')[0]
+        url = first_line.split(b' ')[1]
+        parsed_url = urlparse(url.decode('utf-8'))
+
+        host = parsed_url.hostname
+        path = parsed_url.path + '?' + parsed_url.query if parsed_url.query else parsed_url.path
+        if not path:
+            path = '/'
+        
+        port = parsed_url.port if parsed_url.port else 80
+
+        remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        remote_socket.connect((host, port))
+        remote_socket.send(request)  # Forward the original request
+
+        buffer = "" # stores the entire response from the site
+        while True:
+            response = remote_socket.recv(CHUNK_SIZE)
+            if not response:
+                break
+
+            if b'HTTP/1.1 301' in response:
+                headers = response.split(b'\r\n')
+                for header in headers:
+                    if b'Location: ' in header:
+                        new_url = header.split(b'Location: ')[1].strip()
+                        print(f"Redirecting to {new_url.decode('utf-8')}")
+                        return handle_client(client_socket)  # Recursive call with new URL
+            
+            buffer += response.decode() # use .decode('utf-8') - ?
+
+        proccessedMessage = processWholeSiteInfo(buffer)
+        client_socket.send(proccessedMessage.encode())
+        remote_socket.close()
+    except Exception as e:
+        print(f"Error: {e}")
+
+    client_socket.close()
+
+
+def processWholeSiteInfo(message):
+    '''
+    Proccesses the entire response from the site.
+    Replaces 50% of images, with memes as well.
+    '''
+    global REPLACE_WITH_MEME
     
-#     pass
-
-# def parse_http_responses(raw_response):
-#     responses = []
-#     parts = raw_response.split("\r\n\r\n", 1)  # First split (Headers/Body boundary)
-#     print("Checking:",parts)
-#     while parts:
-#         headers_part, rest = parts  # Extract headers
-#         header_lines = headers_part.split("\r\n")  # Split headers into lines
-        
-#         # First line is the status line
-#         status_line = header_lines[0]
-#         headers = {}
-        
-#         for line in header_lines[1:]:
-#             if ": " in line:
-#                 key, value = line.split(": ", 1)
-#                 headers[key] = value
-
-#         # Determine body length if Content-Length is set
-#         content_length = int(headers.get("Content-Length", 0))
-        
-#         if content_length > 0:
-#             body = rest[:content_length]
-#             rest = rest[content_length:]  # Remove the extracted body from the remaining string
-#         else:
-#             body = ""
-
-#         responses.append({"status": status_line, "headers": headers, "body": body})
-
-#         # Look for the next response (if present)
-#         parts = rest.split("\r\n\r\n", 1) if rest else []
-#         print("Checking: ",parts)
-
-#     return responses
-
-# # Example usage with combined HTTP responses
-# raw_data = (
-#     "HTTP/1.1 200 OK\r\n"
-#     "Content-Type: text/html\r\n"
-#     "Content-Length: 27\r\n"
-#     "\r\n"
-#     "<html><body>Hello</body></html>\r\n"
-#     "\r\n"
-#     "HTTP/1.1 302 Found\r\n"
-#     "Location: https://example.com/login\r\n"
-#     "Content-Length: 0\r\n"
-#     "\r\n"
-# )
-
-# parsed_responses = parse_http_responses(raw_data)
-
-# for i, response in enumerate(parsed_responses, 1):
-#     print(f"Response {i}:")
-#     print(f"Status: {response['status']}")
-#     print(f"Headers: {response['headers']}")
-#     print(f"Body: {response['body']}\n")
-
-
-# def split_http_responses(raw_response):
-#     headers_list = []
-#     bodies_list = []
-
-#     parts = raw_response.split("\r\n\r\n", 1)  # Split first at the header-body boundary
-    
-#     while parts:
-#         headers_part, rest = parts  # Extract headers
-#         header_lines = headers_part.split("\r\n")  # Split headers into lines
-        
-#         # First line is the status line
-#         status_line = header_lines[0]
-#         headers = {"Status": status_line}
-
-#         for line in header_lines[1:]:
-#             if ": " in line:
-#                 key, value = line.split(": ", 1)
-#                 headers[key] = value
-
-#         # Determine body length if Content-Length is set
-#         content_length = int(headers.get("Content-Length", 0))
-        
-#         if content_length > 0:
-#             body = rest[:content_length]
-#             rest = rest[content_length:]  # Remove extracted body from remaining string
-#         else:
-#             body = ""
-
-#         headers_list.append(headers)  # Store headers
-#         bodies_list.append(body)  # Store body
-
-#         # Look for the next response (if present)
-#         parts = rest.split("\r\n\r\n", 1) if rest else []
-
-#     return headers_list, bodies_list
-
-# # Example combined HTTP response data
-# raw_http_data = (
-#     "HTTP/1.1 200 OK\r\n"
-#     "Content-Type: text/html\r\n"
-#     "Content-Length: 27\r\n"
-#     "\r\n"
-#     "<html><body>Hello</body></html>\r\n"
-#     "\r\n"
-#     "HTTP/1.1 302 Found\r\n"
-#     "Location: https://example.com/login\r\n"
-#     "Content-Length: 0\r\n"
-#     "\r\n"
-# )
-
-# # Process response
-# headers_list, bodies_list = split_http_responses(raw_http_data)
-
-# # Print results
-# for i in range(len(headers_list)):
-#     print(f"Response {i + 1}:")
-#     print(f"Headers: {headers_list[i]}")
-#     print(f"Body: {bodies_list[i]}\n")
-
-
-# Example combined HTTP response data
-raw_http_data = (
-    "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html\r\n"
-    "Content-Length: 27\r\n"
-    "\r\n"
-    "<html><body>Hello</body></html>\r\n"
-    "\r\n"
-    "HTTP/1.1 302 Found\r\n"
-    "Location: https://example.com/login\r\n"
-    "Content-Length: 0\r\n"
-    "\r\n"
-)
-
-def process(message):
+    try to use byte code instead of strings, it may be breaking stuff :)
     
     splitted = message.split("\r\n\r\n")
     print("\nSplitted message:\n", splitted) # debug
@@ -153,34 +108,139 @@ def process(message):
         
     #debug
     print("\nList of Headers:\n",listOfHeaders)
+    for x in range(0, len(listOfHeaders)):
+        print("\nUnchanged Header:\n" + listOfHeaders[x])
+        
     print("\nList of Bodies:\n",listOfBodys)
+    print("\nEntered header checker:")
     
     # Check if the header contains an image
+    indexOfHeader = 0
     indexOfBody = 0
-    for headers in listOfHeaders:
-        header_values = headers.split("\r\n")
+    # for headers in listOfHeaders:
+    for indexOfCurrentHeader in range(0, len(listOfHeaders)):
+        # header_values = headers.split("\r\n")
+        currentHeader = listOfHeaders[indexOfCurrentHeader]
+        listOfHeaderValues = currentHeader.split("\r\n")
         
-        lengthOfBody = 0
+        # debug
+        print("\nCurrent header:\n" + currentHeader)
+        print("\tList of header values: ", listOfHeaderValues)
+        
         # Go through eacher header value
-        for aHeader in header_values: 
-            
+        newConstructedHeader = ""
+        for headerValue in listOfHeaderValues: 
             # check if the header contains an image, if it does replace data
-            if "Content-Type: image/" in aHeader:
+            if "Content-Type: image/" in headerValue:
+                # Alternate replaceing site's images (will replace half the sites images)
+                if not REPLACE_WITH_MEME:
+                    REPLACE_WITH_MEME = True
+                    continue
                 
-                # find the "Content-Length" and replace the old data with the meme's data
-                aHeader.split(": ", 1)  # get the header string and header length number
-                    
+                # get meme image
+                randIndex = random.randint(0, len(LIST_OF_MEME_PATHS))
+                meme_path = LIST_OF_MEME_PATHS[randIndex]
                 
-                # replace image's randomly 
-                pass
+                print(f"Replacing image with meme: {meme_path}")  # Debug
+                
+                memeExtention = ""
+                newContentLength = 0
+                memeData = 0
+                with open(meme_path, 'rb') as file:
+                    # memeData = file.read()
+                    memeData = "MEME_DATA :D"   # for debugging
+                    memeExtention =  os.path.splitext(meme_path)[1][1:]    # get meme extention
+                    newContentLength = len(memeData)
+                newContentType = "Content-Type: image/" + memeExtention + "\r\n"
+                newContentLengthStr = "Content-Length: " + str(newContentLength) + "\r\n"
+                
+                # replace the old header values for content type and length
+                newConstructedHeader += newContentType
+                newConstructedHeader += newContentLengthStr
+                listOfBodys[indexOfCurrentHeader] = memeData   # replace the body data with the meme data (decode to get string)
+                
+                REPLACE_WITH_MEME = False
+            # Add the old header value to the construction
+            elif "Content-Length: " in headerValue:  # skip content-length since i already replaced its data
+                continue
+            else:
+                newConstructedHeader += headerValue + "\r\n"
         
-        print("\nHeader values:\n",header_values)
-        print("\tBody length (in bytes): ", lengthOfBody)
-        print("\tBody length (encoded): ", listOfBodys[indexOfBody].encode())
-
+        # Set new construction of header
+        listOfHeaders[indexOfCurrentHeader] = newConstructedHeader + "\r\n"
+        
         indexOfBody = indexOfBody + 1
+        indexOfHeader = indexOfHeader + 1
+        
+    # debug
+    print("\nNew Header values:\n", listOfHeaders)
+    print("\nNew header values:\n")
+    for x in range(0, len(listOfHeaders)):
+        print("------------\n" + listOfHeaders[x])
+        # print("Body val:", str(listOfBodys[x]) + "\n------------")
+        print("Body val: <thing :), string of byte data is too large> \n------------")
     
+    # return the processed message
+    newMessage = ""
+    for index in range(0, len(listOfHeaders)):
+        newMessage += listOfHeaders[index] + "\r\n" + str(listOfBodys[index]) + "\r\n\r\n"
+    return newMessage
     
-process(raw_http_data)
+def start_proxy():
+    print(f"Sloxy running on {HOST}:{PORT}, with a delay of {DELAY} seconds per {CHUNK_SIZE} bytes.")
 
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen(5)
+
+    while True:
+        client_socket, addr = server_socket.accept()
+        print(f"Connection from {addr}")
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+        client_handler.start()
+
+
+# Example HTTP response data
+raw_http_data1 = (
+    "HTTP/1.1 200 OK\r\n"
+    "Content-Type: text/html\r\n"
+    "Content-Length: 27\r\n"
+    "\r\n"
+    "<html><body>Hello</body></html>\r\n"
+    "\r\n"
+    "HTTP/1.1 302 Found\r\n"
+    "Location: https://example.com/login\r\n"
+    "Content-Length: 0\r\n"
+    "\r\n"
+)
+
+raw_http_data2 = (
+    "HTTP/1.1 200 OK\r\n"
+    "Content-Type: image/jpg\r\n"
+    "Content-Length: 4242\r\n"
+    "\r\n"
+    "<html><body>IMAGE DATA</body></html>\r\n"
+    "\r\n"
+    "HTTP/1.1 302 Found\r\n"
+    "Location: https://example.com/login\r\n"
+    "Content-Length: 0\r\n"
+    "\r\n"
+)
+
+if __name__ == "__main__":# Find the "memes" folder starting from the current directory
+    MEME_FOLDER_PATH = find_memes_folder(".")
+    LIST_OF_MEME_NAMES = get_image_names_from_folder(MEME_FOLDER_PATH)
+    LIST_OF_MEME_PATHS = get_images_paths_from_folder(MEME_FOLDER_PATH)
+    print("\nImage names:\n", LIST_OF_MEME_NAMES) # debug
+    print("\nImage paths:\n",LIST_OF_MEME_PATHS) # debug
+    start_proxy()
+
+    # debugging
+    # m = processWholeSiteInfo(raw_http_data2)
+    # print("\nBefore processed:\n" + raw_http_data2)
+    # print("\nProccessed:\n" + m)  
+    # m2 = process(raw_http_data1)
+    # print("\nBefore processed:\n" + raw_http_data1)
+    # print("\nProccessed:\n" + m2)  
 
