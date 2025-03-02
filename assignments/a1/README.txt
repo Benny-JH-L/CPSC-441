@@ -1,5 +1,5 @@
 
-Assignment 1: Advanced Palindrome Check Server-Client Application
+Assignment 2: Build a Meme-Generating Proxy Server
     CPSC 441 Winter 2025 | Benny Liang | 30192142
 
 ---Compile/Running---

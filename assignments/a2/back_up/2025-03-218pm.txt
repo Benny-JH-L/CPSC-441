@@ -1,0 +1,263 @@
+
+import socket
+import threading
+import os
+import random
+import time
+from urllib.parse import urlparse
+
+# Configuration
+HOST = '127.0.0.1'  # Localhost
+PORT = 8080         # Port to run the proxy on
+DELAY = 1.0         # Delay in seconds per chunk of data
+CHUNK_SIZE = 1024   # Size of data chunks to send
+
+MEME_FOLDER_NAME = 'memes'
+MEME_FOLDER_PATH = ""
+EASTER_EGG_URL = b'http://google.ca/'
+LIST_OF_MEME_NAMES = [] # List of meme file names inside the `MEME_FOLDER_NAME`
+LIST_OF_MEME_PATHS = [] # Path to the meme (not sure if needed)
+REPLACE_WITH_MEME = True
+DELAY = 0.1         # Delay in seconds per chunk of data
+
+
+def find_memes_folder(start_path="."):
+    for root, dirs, files in os.walk(start_path):
+        if MEME_FOLDER_NAME in dirs:  # Found the "memes" folder
+            return os.path.join(root, MEME_FOLDER_NAME)
+    return None  # Return None if not found
+
+# Gives the whole image path
+def get_images_paths_from_folder(folder_path):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+    return [
+        os.path.join(folder_path, file)
+        for file in os.listdir(folder_path)
+        if os.path.splitext(file)[1].lower() in image_extensions
+    ]
+
+def get_image_names_from_folder(folder_path):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
+    return [
+        file for file in os.listdir(folder_path)
+        if os.path.splitext(file)[1].lower() in image_extensions
+    ]
+
+
+def handle_client(client_socket):
+    request = client_socket.recv(4096)
+    try:
+        first_line = request.split(b'\r\n')[0]
+        url = first_line.split(b' ')[1]
+        parsed_url = urlparse(url.decode('utf-8'))
+
+        host = parsed_url.hostname
+        path = parsed_url.path + '?' + parsed_url.query if parsed_url.query else parsed_url.path
+        if not path:
+            path = '/'
+        
+        port = parsed_url.port if parsed_url.port else 80
+
+        remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        remote_socket.connect((host, port))
+        remote_socket.send(request)  # Forward the original request
+
+        # buffer = "" # stores the entire response from the site
+        buffer = b'' # stores the entire response from the site
+        while True:
+            response = remote_socket.recv(CHUNK_SIZE)
+            if not response:
+                break
+
+            if b'HTTP/1.1 301' in response:
+                headers = response.split(b'\r\n')
+                for header in headers:
+                    if b'Location: ' in header:
+                        new_url = header.split(b'Location: ')[1].strip()
+                        print(f"Redirecting to {new_url.decode('utf-8')}")
+                        return handle_client(client_socket)  # Recursive call with new URL
+            
+            buffer += response
+            
+        list_of_responses = inject(buffer)
+        
+        for response in list_of_responses:
+            client_socket.send(response)
+            time.sleep(DELAY)  # Slow down response
+            
+        remote_socket.close()
+    except Exception as e:
+        print(f"Error: {e}")
+
+    client_socket.close()
+
+def inject(message):
+    '''
+    takes an entire response from a website (all HTTP responses) and returns a list of new responses with 
+    images replaced with memes.
+    '''
+    
+    print("\nGoing through whole web server response...\n")
+    
+    list_of_responses = []
+    # new_message = b''
+    
+    # loop through the entire website's response (Multiple HTTP responses) and inject a meme if there is an image
+    while message != b'':
+        new_message = b''   # stores a whole HTTP response
+        pos_content_type = message.find(b'Content-Type: image/')  # find an instance of `Content-Type: image/` is located in the entire response
+        
+        if pos_content_type == -1:      # can't find a header
+            new_message += message      # add whatever is left to the `new_message`
+            list_of_responses.append(message)   # add whatever is left to the `list of responses`
+            break
+        
+        # get meme extention, length, and data
+        # randIndex = random.randint(0, len(LIST_OF_MEME_PATHS) - 1)
+        # meme_path = LIST_OF_MEME_PATHS[randIndex]
+        # with open(meme_path, 'rb') as file:
+        #     memeData = file.read()
+        #     memeExtention =  os.path.splitext(meme_path)[1][1:]    # get meme extention
+        #     length_of_meme = len(memeData)
+            
+        # debug
+        # print("\nmeme selected:",meme_path)
+        # print("\nmeme extention: " + memeExtention)    # checking if its a string or byte
+        
+        # for testing, I used these values 
+        memeData = b'<MEME DATA :D>' # debug
+        memeExtention = "png"
+        length_of_meme = len(memeData)
+        
+        # Get Content type and content length of the meme
+        newContentType = b'Content-Type: image/' + memeExtention.encode()
+        newContentLength = b'Content-Length: ' + str(length_of_meme).encode()
+        
+        pos_content_length = message.find(b'Content-Length: ')    # find an instance of where `Content-Length:` is located
+        pos_content_length_rn = message.find(b'\r\n')
+        # find the location of '\r\n' thats after `content-length`
+        while pos_content_length_rn <= pos_content_length:
+            pos_content_length_rn = message.find(b'\r\n', pos_content_length_rn + 1)
+        
+        print("position of \\r\\n after `content-length is:", pos_content_length_rn, "\n\tStarting char:", repr(message[pos_content_length_rn]))
+        new_message += message[:pos_content_length] + newContentLength       # replace the old content-length with the meme's content-length, and add it to the new response
+        print("\nreplaced content-length(new message is now):\n",new_message) # debug
+        
+        new_message += message[pos_content_length_rn:pos_content_type] + newContentType        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
+        print("\nreplaced content-type (new message is now):\n",new_message) # debug
+        
+        # old replacements (content length is actually before content type lol, need to swap)
+        # new_message += message[:pos_content_type] + newContentType        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
+        # # print("\nreplaced content-type (new message is now):\n",new_message) # debug
+        # pos_content_length = message.find(b'Content-Length: ')    # find an instance of where `Content-Length:` is located
+        # new_message += message[pos_content_type + len(newContentType) :pos_content_length] + newContentLength       # replace the old content-length with the meme's content-length, and add it to the new response
+        # # print("\nreplaced content-length(new message is now):\n",new_message) # debug
+       
+        pos_header_data_separator = message.find(b'\r\n\r\n')       # find the separator '\r\n\r\n`, that separates the header values and the data
+    
+        # old
+        # new_message += message[pos_content_length + len(newContentLength):pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
+        # print("\nAdding other:\n",new_message)
+        # pos_start_of_separator = pos_header_data_separator + 4      # the location where the old message data starts
+        
+        # find the location of '\r\n' thats after `content-type`
+        pos_content_type_rn = pos_content_length_rn
+        while pos_content_type_rn <= pos_content_type:
+            pos_content_type_rn = message.find(b'\r\n', pos_content_type_rn + 1)
+        
+        new_message += message[pos_content_type_rn:pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
+        print("\nAdding other:\n",new_message)
+        pos_start_of_separator = pos_header_data_separator + 4      # the location where the old message data starts
+        
+        # remove the data we went through in original message (header stuff)
+        message = message[pos_start_of_separator:]
+        print("\nRemoved header values (updated message is now):\n",message)
+        
+        # set new data
+        new_message += b'\r\n\r\n' + memeData
+        print("\nAdded memeData (to new message):\n",new_message)
+        
+        # update `message` by removing the old data
+        print("\nmessage before removing old data:\n",message)
+        pos_HTTP = message.find(b'HTTP/')   # find the next `HTTP`
+        
+        # case, this is not the last HTTP response, remove the data
+        if (pos_HTTP != -1):    
+            message = message[pos_HTTP:]
+        # case, this is the last HTTP response, add the new response to the list and break out of loop
+        else:
+            # print("\nmessage has not more repsonses (current message):",message)
+            list_of_responses.append(new_message)
+            break
+
+        print("\nmessage after removing old data:\n",message)
+        print("\n`new message` currently:\n",new_message)
+        list_of_responses.append(new_message) # when `new_message` is cleared for each loop
+
+    return list_of_responses
+
+  
+def start_proxy():
+    print(f"Sloxy running on {HOST}:{PORT}, with a delay of {DELAY} seconds per {CHUNK_SIZE} bytes.")
+
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen(5)
+
+    while True:
+        client_socket, addr = server_socket.accept()
+        print(f"Connection from {addr}")
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+        client_handler.start()
+
+
+# Example HTTP response data
+raw_http_data1 = (
+    "HTTP/1.1 200 OK\r\n" # 0-16 index
+    "Content-Length: 27\r\n" #17-36 index
+    "Content-Type: text/html\r\n" #18-61
+    "\r\n"
+    "<html><body>Hello</body></html>\r\n"
+    "\r\n"
+    "HTTP/1.1 302 Found\r\n"
+    "Location: https://example.com/login\r\n"
+    "Content-Length: 0\r\n"
+    "\r\n"
+)
+
+# yes there are supposed to be no `'\r\n\r\n` between responses from the site :)
+raw_http_data2 = (
+    "HTTP/1.1 200 OK\r\n"   # 0-16 index
+    "Date: YYYY-MM-DD\r\n"  # 17-34
+    "Content-Length: 4242\r\n" # 35-56
+    "Content-Type: image/jpg\r\n"
+    "Another value :)\r\n"
+    "\r\n"
+    "<html><body>IMAGE DATA</body></html>"
+    
+    "HTTP/1.1 302 Found\r\n"
+    "Location: https://example.com/login\r\n"
+    "Content-Length: 0\r\n"
+    "\r\n"
+)
+
+if __name__ == "__main__":# Find the "memes" folder starting from the current directory
+    MEME_FOLDER_PATH = find_memes_folder(".")
+    LIST_OF_MEME_NAMES = get_image_names_from_folder(MEME_FOLDER_PATH)
+    LIST_OF_MEME_PATHS = get_images_paths_from_folder(MEME_FOLDER_PATH)
+    print("\nImage names:\n", LIST_OF_MEME_NAMES) # debug
+    print("\nImage paths:\n",LIST_OF_MEME_PATHS) # debug
+    # start_proxy()
+
+    # debugging
+    # m = processWholeSiteInfo(raw_http_data2)
+    # print("\nBefore processed:\n" + raw_http_data2)
+    # print("\nProccessed:\n" + m)  
+    # m2 = process(raw_http_data1)
+    # print("\nBefore processed:\n" + raw_http_data1)
+    # print("\nProccessed:\n" + m2)  
+    m = inject(raw_http_data2.encode())
+    print("\nBefore processed:\n" + raw_http_data2)
+    print("\nProccessed:\n",m)  
+

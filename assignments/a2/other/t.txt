@@ -1,7 +1,4 @@
 
-# Assignment 2: Build a Meme-Generating Proxy Server
-#     CPSC 441 Winter 2025 | Benny Liang | 30192142
-
 import socket
 import threading
 import os
@@ -12,7 +9,9 @@ from urllib.parse import urlparse
 # Configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 8080         # Port to run the proxy on
+DELAY = 1.0         # Delay in seconds per chunk of data
 CHUNK_SIZE = 1024   # Size of data chunks to send
+
 MEME_FOLDER_NAME = 'memes'
 MEME_FOLDER_PATH = ""
 EASTER_EGG_URL = b'http://google.ca/'
@@ -21,10 +20,8 @@ LIST_OF_MEME_PATHS = [] # Path to the meme (not sure if needed)
 REPLACE_WITH_MEME = True
 DELAY = 0.1         # Delay in seconds per chunk of data
 
+
 def find_memes_folder(start_path="."):
-    '''
-    Finds the a path to the `MEME_FOLDER_NAME`
-    '''
     for root, dirs, files in os.walk(start_path):
         if MEME_FOLDER_NAME in dirs:  # Found the "memes" folder
             return os.path.join(root, MEME_FOLDER_NAME)
@@ -32,9 +29,6 @@ def find_memes_folder(start_path="."):
 
 # Gives the whole image path
 def get_images_paths_from_folder(folder_path):
-    '''
-    Returns a list of paths to all the memes in the `MEME_FOLDER_NAME`
-    '''
     image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
     return [
         os.path.join(folder_path, file)
@@ -43,14 +37,12 @@ def get_images_paths_from_folder(folder_path):
     ]
 
 def get_image_names_from_folder(folder_path):
-    '''
-    Returns a list of file names of the memes in the `MEME_FOLDER_NAME`
-    '''
     image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
     return [
         file for file in os.listdir(folder_path)
         if os.path.splitext(file)[1].lower() in image_extensions
     ]
+
 
 def handle_client(client_socket):
     request = client_socket.recv(4096)
@@ -66,30 +58,32 @@ def handle_client(client_socket):
         
         port = parsed_url.port if parsed_url.port else 80
 
-        # check if the url is the easter egg url
-        if url == EASTER_EGG_URL:
-            response = get_easter_egg_surpise()
-            client_socket.send(response)
-        # otherwise process response
-        else:
-            remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            remote_socket.connect((host, port))
-            remote_socket.send(request)  # Forward the original request
+        remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        remote_socket.connect((host, port))
+        remote_socket.send(request)  # Forward the original request
 
-            buffer = b''    # stores the entire response from the site
-            while True:
-                response = remote_socket.recv(CHUNK_SIZE)
-                if not response:
-                    break
-                
-                buffer += response  # add the chunk 
+        # buffer = "" # stores the entire response from the site
+        buffer = b'' # stores the entire response from the site
+        while True:
+            response = remote_socket.recv(CHUNK_SIZE)
+            if not response:
+                break
+
+            if b'HTTP/1.1 301' in response:
+                headers = response.split(b'\r\n')
+                for header in headers:
+                    if b'Location: ' in header:
+                        new_url = header.split(b'Location: ')[1].strip()
+                        print(f"Redirecting to {new_url.decode('utf-8')}")
+                        return handle_client(client_socket)  # Recursive call with new URL
             
-            list_of_responses = inject(buffer)  # inject memes where possible
+            buffer += response
+            
+        list_of_responses = inject(buffer)
         
-            # send the response back to the client
-            for response in list_of_responses:
-                client_socket.send(response)
-                time.sleep(DELAY)  # Slow down response
+        for response in list_of_responses:
+            client_socket.send(response)
+            time.sleep(DELAY)  # Slow down response
             
         remote_socket.close()
     except Exception as e:
@@ -97,46 +91,18 @@ def handle_client(client_socket):
 
     client_socket.close()
 
-def get_easter_egg_surpise():
-    '''
-    turns the whole web page into a meme.
-    '''
-    print("\nEntered easter egg\n")
-    
-    # get a randome meme from memes folder
-    randIndex = random.randint(0, len(LIST_OF_MEME_PATHS) - 1)
-    meme_path = LIST_OF_MEME_PATHS[randIndex]
-    with open(meme_path, 'rb') as file:
-        memeData = file.read()
-        memeExtention =  os.path.splitext(meme_path)[1][1:]    # get meme extention
-        length_of_meme = len(memeData)
-    
-    easter_egg_response = (
-        b'HTTP/1.1 200 OK\r\n'
-        b'Content-Type: ' + memeExtention.encode() + b'\r\n'
-        b'Content-Length: ' + str(length_of_meme).encode() + b'\r\n'
-        b'\r\n'
-    )
-    
-    easter_egg_response += memeData
-    
-    return easter_egg_response
-
 def inject(message):
     '''
     takes an entire response from a website (all HTTP responses) and returns a list of new responses with 
     images replaced with memes.
     '''
     
-    print("\nWeb server response:\n",message) # debug
+    print(message)
     
     print("\nGoing through whole web server response...\n")
     
     list_of_responses = []
-    
-    if message.find(b'HTTP/') == -1:
-        print("\nweb server response does not contain HTTP/... not going to inject\n")
-        return [message]
+    # new_message = b''
     
     # loop through the entire website's response (Multiple HTTP responses) and inject a meme if there is an image
     while message != b'':
@@ -169,34 +135,45 @@ def inject(message):
         newContentType = b'Content-Type: image/' + memeExtention.encode()
         newContentLength = b'Content-Length: ' + str(length_of_meme).encode()
         
-        pos_content_length = message.find(b'Content-Length: ')      # find an instance of where `Content-Length:` is located
+        pos_content_length = message.find(b'Content-Length: ')    # find an instance of where `Content-Length:` is located
         pos_header_data_separator = message.find(b'\r\n\r\n')       # find the separator '\r\n\r\n`, that separates the header values and the data
         
-        # Case where the position of `Content-Length:` is < the position of `Content-Type:`
-        if (pos_content_length < pos_content_type):
+        if (pos_content_length > pos_content_type):
             pos_content_length_rn = message.find(b'\r\n')
             # find the location of '\r\n' thats after `content-length`
             while pos_content_length_rn <= pos_content_length:
                 pos_content_length_rn = message.find(b'\r\n', pos_content_length_rn + 1)
             
             # print("position of \\r\\n after `content-length is:", pos_content_length_rn, "\n\tStarting char:", repr(message[pos_content_length_rn]))
-            new_message += message[:pos_content_length] + newContentLength       # Add what ever was before `Content-Length`, then replace the old content-length with the meme's content-length, and add it to the new response
+            new_message += message[:pos_content_length] + newContentLength       # replace the old content-length with the meme's content-length, and add it to the new response
             # print("\nreplaced content-length(new message is now):\n",new_message) # debug
             
-            new_message += message[pos_content_length_rn:pos_content_type] + newContentType        # Add what ever was after `Content-Length` but before `Content-Type` then replace the old content type with new content type and add it to the new response
+            new_message += message[pos_content_length_rn:pos_content_type] + newContentType        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
             # print("\nreplaced content-type (new message is now):\n",new_message) # debug
+            
+            # old replacements (content length is actually before content type lol, need to swap)
+            # new_message += message[:pos_content_type] + newContentType        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
+            # # print("\nreplaced content-type (new message is now):\n",new_message) # debug
+            # pos_content_length = message.find(b'Content-Length: ')    # find an instance of where `Content-Length:` is located
+            # new_message += message[pos_content_type + len(newContentType) :pos_content_length] + newContentLength       # replace the old content-length with the meme's content-length, and add it to the new response
+            # # print("\nreplaced content-length(new message is now):\n",new_message) # debug
+        
+        
+            # old
+            # new_message += message[pos_content_length + len(newContentLength):pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
+            # print("\nAdding other:\n",new_message)
+            # pos_start_of_separator = pos_header_data_separator + 4      # the location where the old message data starts
             
             # find the location of '\r\n' thats after `content-type`
             pos_content_type_rn = pos_content_length_rn
             while pos_content_type_rn <= pos_content_type:
                 pos_content_type_rn = message.find(b'\r\n', pos_content_type_rn + 1)
             
-            new_message += message[pos_content_type_rn:pos_header_data_separator] # add any other header data after `content-type` to the new message that are before the separator '\r\n\r\n`
+            new_message += message[pos_content_type_rn:pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
             # print("\nAdding other:\n",new_message)
             
-            print("entered case 1, content type length < content type pos") # debug
-        
-        # Case where the position of `Content-Length:` is > the position of `Content-Type:`   
+            print("entered case 1, content type length > content type pos")
+            
         else:
             
             # find the location of '\r\n' thats after `content-type`
@@ -205,28 +182,42 @@ def inject(message):
                 pos_content_type_rn = message.find(b'\r\n', pos_content_type_rn + 1)
             
             # print("position of \\r\\n after `content-length is:", pos_content_length_rn, "\n\tStarting char:", repr(message[pos_content_length_rn]))
-            new_message += message[:pos_content_type] + newContentType      # Add what ever was before `Content-Type`, then replace the old content-type with the meme's content-type, and add it to the new response
+            new_message += message[:pos_content_type] + newContentType       # replace the old content-length with the meme's content-length, and add it to the new response
             # print("\nreplaced content-length(new message is now):\n",new_message) # debug
             
-            new_message += message[pos_content_type_rn:pos_content_length] + newContentLength        # Add what ever was after `Content-Type` but before `Content-length` then replace the old content length with new content type and add it to the new response
+            new_message += message[pos_content_type_rn:pos_content_length] + newContentLength        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
             # print("\nreplaced content-type (new message is now):\n",new_message) # debug
+            
+            # old replacements (content length is actually before content type lol, need to swap)
+            # new_message += message[:pos_content_type] + newContentType        # replace the old content type with new content type by inserting it, while also adding whatever was before it to the new response
+            # # print("\nreplaced content-type (new message is now):\n",new_message) # debug
+            # pos_content_length = message.find(b'Content-Length: ')    # find an instance of where `Content-Length:` is located
+            # new_message += message[pos_content_type + len(newContentType) :pos_content_length] + newContentLength       # replace the old content-length with the meme's content-length, and add it to the new response
+            # # print("\nreplaced content-length(new message is now):\n",new_message) # debug
+        
+        
+            # old
+            # new_message += message[pos_content_length + len(newContentLength):pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
+            # print("\nAdding other:\n",new_message)
+            # pos_start_of_separator = pos_header_data_separator + 4      # the location where the old message data starts
             
             pos_content_length_rn = message.find(b'\r\n')
             # find the location of '\r\n' thats after `content-length`
             while pos_content_length_rn <= pos_content_length:
                 pos_content_length_rn = message.find(b'\r\n', pos_content_length_rn + 1)
             
-            new_message += message[pos_content_length_rn:pos_header_data_separator] # add any other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
+            new_message += message[pos_content_length_rn:pos_header_data_separator] # add all other header data after `content-length` to the new message that are before the separator '\r\n\r\n`
             # print("\nAdding other:\n",new_message)
+            print("entered case 2, content type pos > content length pos")
             
-            print("entered case 2, content type pos < content length pos") # debug
             
-        # remove the data we went through in original message (header stuff)
         pos_start_of_separator = pos_header_data_separator + 4      # the location where the old message data starts
+        
+        # remove the data we went through in original message (header stuff)
         message = message[pos_start_of_separator:]
         # print("\nRemoved header values (updated message is now):\n",message)
         
-        print("\nNew message created (not including data in this print):\n",new_message)     # debug
+        print(new_message)
         
         # set new data
         new_message += b'\r\n\r\n' + memeData
@@ -238,7 +229,7 @@ def inject(message):
         
         # case, this is not the last HTTP response, remove the data
         if (pos_HTTP != -1):    
-            message = message[pos_HTTP:]    # copies everything starting from the next instance of 'HTTP'
+            message = message[pos_HTTP:]
         # case, this is the last HTTP response, add the new response to the list and break out of loop
         else:
             # print("\nmessage has not more repsonses (current message):",message)
@@ -249,6 +240,7 @@ def inject(message):
         # print("\n`new message` currently:\n",new_message)
         list_of_responses.append(new_message) # when `new_message` is cleared for each loop
 
+    # print(list_of_responses)
     return list_of_responses
 
   
@@ -313,7 +305,7 @@ if __name__ == "__main__":# Find the "memes" folder starting from the current di
     # print("\nBefore processed:\n" + raw_http_data1)
     # print("\nProccessed:\n" + m2)  
     
-    # m = inject(raw_http_data2.encode())
-    # print("\nBefore processed:\n" + raw_http_data2)
-    # print("\nProccessed:\n",m)  
+    m = inject(raw_http_data2.encode())
+    print("\nBefore processed:\n" + raw_http_data2)
+    print("\nProccessed:\n",m)  
 
