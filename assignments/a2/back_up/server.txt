@@ -53,7 +53,7 @@ def handle_client(client_socket, client_addr):
                 pass
                 
             client_socket.send(response)  # Forward to client
-            time.sleep(DELAY)  # Slow down response
+            # time.sleep(DELAY)  # Slow down response
 
         remote_socket.close()
     except Exception as e:

@@ -61,7 +61,7 @@ def injectMeme(message):
             if SHOULD_REPLACE:
                 SHOULD_REPLACE = False 
             # if random.random() < 0.5:
-                randIndex = random.randint(0, len(LIST_OF_MEME_PATHS))
+                randIndex = random.randint(0, len(LIST_OF_MEME_PATHS) - 1)
                 # meme_path = random.choice(LIST_OF_MEME_PATHS)
                 meme_path = LIST_OF_MEME_PATHS[randIndex]
                 print(f"Replacing with meme: {meme_path}")  # Debug
@@ -78,11 +78,13 @@ def injectMeme(message):
                     
                     header = b'\r\n'.join(headerValues)
                     
-                    print(f'\nheader value[2] = \n{headerValues[2].decode()}')
-                    print(f'header value[3] = \n{headerValues[3].decode()}')
+                    # print("\nNew headers:\n", headerValues)
                     
-                    print(f"\n--Inject header values:\n{header.decode()}") # debug
-                    print(f"\n--Inject Body:\n{meme_data.decode()}")
+                    # print(f'\nheader value[2] = \n{headerValues[2].decode()}')
+                    # print(f'header value[3] = \n{headerValues[3].decode()}')
+                    
+                    # print(f"\n--Inject header values:\n{header.decode()}") # debug
+                    # print(f"\n--Inject Body:\n{meme_data.decode()}")
                     
                     return header + b'\r\n\r\n' + meme_data
             else:
@@ -134,9 +136,9 @@ def handle_client(client_socket):
             
             response = injectMeme(response)
             buffered += response
-            # client_socket.send(response)  # Forward to client
+            client_socket.send(response)  # Forward to client
             
-        client_socket.send(buffered)  # Forward to client
+        # client_socket.send(buffered)  # Forward to client
         remote_socket.close()
     except Exception as e:
         print(f"Error: {e}")
