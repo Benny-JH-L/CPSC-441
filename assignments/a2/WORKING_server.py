@@ -91,7 +91,7 @@ def handle_client(client_socket):
                 client_socket.send(response)
                 time.sleep(DELAY)  # Slow down response
             
-        remote_socket.close()
+            remote_socket.close()
     except Exception as e:
         print(f"Error: {e}")
 
