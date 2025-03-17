@@ -1,0 +1,72 @@
+2025-03-17 11:34:21,042 - Server started and listening on localhost:12345
+2025-03-17 11:34:36,683 - Connection from ('127.0.0.1', 52471)
+2025-03-17 11:34:36,684 - Data recieved: <> from ('127.0.0.1', 52471)
+2025-03-17 11:34:36,685 - Client ('127.0.0.1', 52471) disconnected...
+2025-03-17 11:34:36,686 - Closed connection with ('127.0.0.1', 52471)
+2025-03-17 11:35:44,672 - Server started and listening on localhost:12345
+2025-03-17 11:35:48,731 - Connection from ('127.0.0.1', 52518)
+2025-03-17 11:35:52,352 - Data recieved: <12345> from ('127.0.0.1', 52518)
+2025-03-17 11:35:52,353 - Sent response: <12345> to ('127.0.0.1', 52518)
+2025-03-17 11:35:58,814 - Data recieved: <12345|123> from ('127.0.0.1', 52518)
+2025-03-17 11:35:58,815 - Sent response: <12345|123> to ('127.0.0.1', 52518)
+2025-03-17 11:36:13,374 - Connection from ('127.0.0.1', 52533)
+2025-03-17 11:36:15,078 - Data recieved: <123> from ('127.0.0.1', 52533)
+2025-03-17 11:36:15,079 - Sent response: <123> to ('127.0.0.1', 52533)
+2025-03-17 11:36:17,632 - Data recieved: <123|fff> from ('127.0.0.1', 52533)
+2025-03-17 11:36:17,633 - Sent response: <123|fff> to ('127.0.0.1', 52533)
+2025-03-17 11:36:19,739 - Data recieved: <12345|f> from ('127.0.0.1', 52518)
+2025-03-17 11:36:19,741 - Sent response: <12345|f> to ('127.0.0.1', 52518)
+2025-03-17 11:36:22,404 - Data recieved: <12345|f> from ('127.0.0.1', 52518)
+2025-03-17 11:36:22,405 - Sent response: <12345|f> to ('127.0.0.1', 52518)
+2025-03-17 11:36:24,378 - Data recieved: <12345|f> from ('127.0.0.1', 52518)
+2025-03-17 11:36:24,379 - Sent response: <12345|f> to ('127.0.0.1', 52518)
+2025-03-17 11:37:17,638 - Client ('127.0.0.1', 52533) timeout (1 timeouts)... Waiting...
+2025-03-17 11:37:24,378 - Client ('127.0.0.1', 52518) timeout (1 timeouts)... Waiting...
+2025-03-17 11:38:17,643 - Client ('127.0.0.1', 52533) timeout (2 timeouts)... Waiting...
+2025-03-17 11:38:24,394 - Client ('127.0.0.1', 52518) timeout (2 timeouts)... Waiting...
+2025-03-17 11:39:10,061 - Closed connection with ('127.0.0.1', 52518)
+2025-03-17 11:39:10,840 - Closed connection with ('127.0.0.1', 52533)
+2025-03-17 11:41:55,146 - Server started and listening on localhost:12345
+2025-03-17 11:41:58,976 - Connection from ('127.0.0.1', 52732)
+2025-03-17 11:42:02,230 - Closed connection with ('127.0.0.1', 52732)
+2025-03-17 11:45:00,144 - Server started and listening on localhost:12345
+2025-03-17 11:45:03,753 - Connection from ('127.0.0.1', 52841)
+2025-03-17 11:45:05,339 - Data recieved: <username:CHECK_UNIQUE_USER, message:> from ('127.0.0.1', 52841)
+2025-03-17 11:45:05,340 - Sent response: <CHECK_UNIQUE_USER|> to ('127.0.0.1', 52841)
+2025-03-17 11:46:05,345 - Client ('127.0.0.1', 52841) timeout (1 timeouts)... Waiting...
+2025-03-17 11:46:05,346 - Closed connection with ('127.0.0.1', 52841)
+2025-03-17 11:46:50,650 - Server started and listening on localhost:12345
+2025-03-17 12:00:06,289 - Server started and listening on localhost:12345
+2025-03-17 12:00:09,091 - Connection from ('127.0.0.1', 53393)
+2025-03-17 12:00:11,815 - Data recieved: <username:CHECK_UNIQUE_USER, message:> from ('127.0.0.1', 53393)
+2025-03-17 12:00:11,816 - Sent response: <CHECK_UNIQUE_USER|> to ('127.0.0.1', 53393)
+2025-03-17 12:00:20,228 - Connection from ('127.0.0.1', 53399)
+2025-03-17 12:00:25,089 - Data recieved: <username:CHECK_UNIQUE_USER, message:> from ('127.0.0.1', 53399)
+2025-03-17 12:00:25,091 - Sent response: <CHECK_UNIQUE_USER|> to ('127.0.0.1', 53399)
+2025-03-17 12:00:31,180 - Data recieved: <username:12345, message:j> from ('127.0.0.1', 53393)
+2025-03-17 12:00:31,181 - Sent response: <12345|j> to ('127.0.0.1', 53393)
+2025-03-17 12:00:37,530 - Data recieved: <username:12345, message:l> from ('127.0.0.1', 53393)
+2025-03-17 12:00:37,531 - Sent response: <12345|l> to ('127.0.0.1', 53393)
+2025-03-17 12:00:39,411 - Data recieved: <username:12345, message:l> from ('127.0.0.1', 53393)
+2025-03-17 12:00:39,412 - Sent response: <12345|l> to ('127.0.0.1', 53393)
+2025-03-17 12:01:25,101 - Client ('127.0.0.1', 53399) timeout (1 timeouts)... Waiting...
+2025-03-17 12:01:39,404 - Client ('127.0.0.1', 53393) timeout (1 timeouts)... Waiting...
+2025-03-17 12:01:48,330 - Closed connection with ('127.0.0.1', 53393)
+2025-03-17 12:01:49,140 - Closed connection with ('127.0.0.1', 53399)
+2025-03-17 12:02:15,079 - Server started and listening on localhost:12345
+2025-03-17 12:02:18,036 - Connection from ('127.0.0.1', 53471)
+2025-03-17 12:02:20,592 - Data recieved: <username:CHECK_UNIQUE_USER, message:> from ('127.0.0.1', 53471)
+2025-03-17 12:02:20,594 - Closed connection with ('127.0.0.1', 53471)
+2025-03-17 12:14:09,895 - Server started and listening on localhost:12345
+2025-03-17 12:14:16,131 - Connection from ('127.0.0.1', 53856)
+2025-03-17 12:15:17,400 - Client ('127.0.0.1', 53856) timeout (1 timeouts)... Waiting...
+2025-03-17 12:15:17,401 - Data recieved: <username:CHECK_UNIQUE_USER, message:> from ('127.0.0.1', 53856)
+2025-03-17 12:15:17,402 - Client ('127.0.0.1', 53856) disconnected...
+2025-03-17 12:15:17,403 - Closed connection with ('127.0.0.1', 53856)
+2025-03-17 12:15:52,538 - Server started and listening on localhost:12345
+2025-03-17 12:15:56,053 - Connection from ('127.0.0.1', 53918)
+2025-03-17 12:15:57,265 - Closed connection with ('127.0.0.1', 53918)
+2025-03-17 12:17:12,901 - Server started and listening on localhost:12345
+2025-03-17 12:17:15,416 - Connection from ('127.0.0.1', 53973)
+2025-03-17 12:17:16,593 - Data recieved: <username:, message:CHECK_UNIQUE_USER> from ('127.0.0.1', 53973)
+2025-03-17 12:17:16,594 - Closed connection with ('127.0.0.1', 53973)
