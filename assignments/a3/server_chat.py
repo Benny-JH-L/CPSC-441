@@ -20,6 +20,7 @@ CHAT_ROOM_SIZE = 5
 REQUEST_CHECK_UNIQUE_USERNAME = "CHECK_UNIQUE_USER"
 REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
 REQUEST_GROVE = "@grove"
+REQUEST_EXIT = "EXIT"
 
 LIST_PANDA_THEMED_DECORATIONS = [
     "\U0001F43C", # 🐼
@@ -48,7 +49,8 @@ def is_unique_username(client_socket, username):
     #             client.send(joined_message.encode())
     #         except:
     #             LIST_OF_CLIENTS.remove(client)
-                
+
+    print(f"[SERVER] {username} joined the chat.")  # debug
     return "true" # is a unique username
 
 # causing "echo's"
@@ -66,24 +68,23 @@ def send_message_to_chatroom(client_socket, username, message):
     """
     Sends the `message` to all the clients. (ie updates the chat room with the new message)
     """
-    message_from_other_user = f"{username} > {message}"  # Format message once
+    message_from_other_user = f"{username} > {message}"  # format message 
     
     # send the `message_from_other_user` to all other users (excluding the one who sent it)
     for client in LIST_OF_CLIENTS:
         if client != client_socket:
             try:
                 client.send(message_from_other_user.encode())
-            except:
-                LIST_OF_CLIENTS.remove(client)
+            except:                             # client no longer exists
+                LIST_OF_CLIENTS.remove(client)  # remove the non_existant client
 
 def handle_client(client_socket, client_address):
-    """ Handle incoming client requests. """
+    """ 
+    Handle incoming client requests. 
+    """
     
     logging.info(f"Connection from {client_address}")
     print(f"Connection from {client_address}")
-        
-    # client_socket.settimeout(CLIENT_TIMEOUT)  # Set timeout for receiving data
-    numTimeouts = 0  # Initialize timeout counter
     
     try:
         while True:
@@ -91,19 +92,29 @@ def handle_client(client_socket, client_address):
             
             if not client_message:
                 break
-            
+                
             print(f"received client message: {client_message}")
             
             # incoming message will be in the form of (excluding the spaces): "<request type> | <user name> | <message>"
             # request_type, username, message = client_message.split("|")
             request_type, username, message = client_message.strip().split("|")
             
+            if request_type == REQUEST_EXIT:
+                LIST_OF_USERNAMES.remove(username)
+                leave_message = f"{username} has left..."
+                send_message_to_chatroom(client_socket, "Server", leave_message)        # notify the chat room this user left \
+                print(f"[SERVER] {username} has left.")
+                break
+            
+            # send the `message` to the chat
             if (request_type == REQUEST_SEND_MESSAGE):
                 send_message_to_chatroom(client_socket, username, message)
+                print("[SERVER] sent message to all clients")     # debug
                 
+            # checking if the username entered is unique
             elif (request_type == REQUEST_CHECK_UNIQUE_USERNAME):
                 result = is_unique_username(client_socket, username).strip()
-                print("[SERVER] CHECKING UNIQUE USERNAME result =",result)  # debug
+                print(f"[SERVER] {username} is unique: {result}")  # debug
                 client_socket.send(result.encode())     # tell client the if the username is unique
                 
             elif (request_type == REQUEST_GROVE):

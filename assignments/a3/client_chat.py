@@ -14,6 +14,7 @@ REQUEST_CHECK_UNIQUE_USERNAME = "CHECK_UNIQUE_USER"
 REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
 REQUEST_GROVE = "@grove"
 REQUEST_BAMBOO = "@bamboo"
+REQUEST_EXIT = "EXIT"
 
 LIST_PANDA_THEMED_DECORATIONS = [
     "\U0001F43C", # 🐼
@@ -24,17 +25,20 @@ LIST_PANDA_THEMED_DECORATIONS = [
 
 LIST_OF_PANDA_FACTS = [
     "Did you know, the scientific name for giant panda's are 'Ailuropoda melanoleuca' which translates to 'black and white cat-foot'",
-    "Did you know, panda's are good swimmers and climbers.",
-    "Did you know, panda's spend at least half of the day eating, up to 16 hours a day!",
     "Did you know, giant panda's poop around 100 times a day.",
     "Did you know, giant panda's are considered `living fossils` because they haven't evolved much in their millions of years of life on Earth.",
     "Did you know, panda's have a `pseudo thumb` that helps them grip bamboo.",
     "Did you know, a panda's jaws are so strong they similar to that of a lion.",
-    "Did you know, giant panda mothers will breathe heavily on their cubs to keep them warm and humid."
+    "Did you know, giant panda mothers will breathe heavily on their cubs to keep them warm and humid.",
+    "Pandas spend around 14 hours a day eating bamboo! ",
+    "Baby pandas are born pink and weigh only about 100 grams! ",
+    "A group of pandas is called an embarrassment! ",
+    "Pandas can swim and are excellent tree climbers! ",
+    "There are only about 1,800 giant pandas left in the wild. "
 ]
 # Citations:
-# The first 5 panda facts are from: https://www.ifaw.org/ca-en/journal/15-fascinating-facts-giant-pandas 
-# 6-8 are from: https://nationalzoo.si.edu/animals/news/50-panda-facts-celebrate-50-years-giant-pandas-smithsonians-national-zoo
+# https://www.ifaw.org/ca-en/journal/15-fascinating-facts-giant-pandas 
+# https://nationalzoo.si.edu/animals/news/50-panda-facts-celebrate-50-years-giant-pandas-smithsonians-national-zoo
 
 
 ASCII_PANDA_ART = '''
@@ -112,13 +116,15 @@ def display_messages(client_socket, username):
             # if (response == REQUEST_GROVE):         # print the list of connected users
             #     list_of_connected_users = rest
             #     sys.stdout.write(rest + "\n")
-                
+            
+            # keep "<username> > " at the bottom of the screen
             sys.stdout.write("\r" + " " * 100 + "\r")  # clear current input line
             sys.stdout.write(response + "\n")  
             sys.stdout.write(f"\r{username} > ")    # print "username > "
             sys.stdout.flush()
-        except:
-            print("[Exception in display messages]")
+        except: # if the client leaves, break.
+            # print("[Exception in display messages] exiting...")     # debug
+            print("Exiting...")     # debug
             break
 
 def is_unique_username(client_socket, username_to_check):
@@ -150,15 +156,16 @@ def start_client():
             client_socket.connect((SERVER_HOST, SERVER_PORT))
                         
             # ask the user for a unique username 
-            username = ""
+            print ("Welcome to Panda Chat!")
             print(ASCII_PANDA_ART)
+            username = ""
             while(username == ""): 
                 username_to_check = input("Please choose a username: ")
                 
                 # check if the entered username is unique
                 if (is_unique_username(client_socket, username_to_check)):
                     username = username_to_check                    # set the user name
-                    print(f"[CLIENT] Username set to: {username}")  # debug
+                    print(f" Username set to: {username}")  # debug
                     break
             
             # thread to update the chat room messages for this client
@@ -169,6 +176,7 @@ def start_client():
                 print("[CLIENT] Thread exception...")
                 return
             
+            # asking the user for mesages
             while(True):
                 # ask the user for an input, ie message
                 sys.stdout.write(f"{username} > ")
@@ -177,8 +185,11 @@ def start_client():
                 
                 # sent message will be in the form of (excluding the spaces): "<request type> | <user name> | <message>"
                 if (message == "@leaves"):  # leave chat room
-                    print("Leaving the chatroom...")
+                    leave_message = f"{REQUEST_EXIT}|{username}|{""}"
+                    client_socket.send(leave_message.encode())      # tell the server this user wants to leave the chat room
+                    print("Leaving the chat room...")
                     break
+                
                 elif (message == "@bamboo"):  # random panda-related fact
                     randIndex = random.randint(0, len(LIST_OF_PANDA_FACTS) - 1)
                     randFact = LIST_OF_PANDA_FACTS[randIndex]
@@ -187,31 +198,28 @@ def start_client():
                 elif (message == "@grove"):   # lists all current connected users
                     request = f"{REQUEST_GROVE}|{username}|{""}"
                     client_socket.send(request.encode())
-
-                    
-                    # print users
-                    
                     
                 # send message to the chat room
                 else:
                     # get randome panda-themed decor
                     randIndex = random.randint(0, len(LIST_PANDA_THEMED_DECORATIONS) - 1)
                     randEmoji = LIST_PANDA_THEMED_DECORATIONS[randIndex]
-                    message = message + " " + randEmoji
+                    message = message + " " + randEmoji                     # add the decor
                     message = f"{REQUEST_SEND_MESSAGE}|{username}|{message}"
                     client_socket.send(message.encode())
             
         except:
-            print("EXCEPTION HAPPENED IN CLIIENT")     
+            print("EXCEPTION HAPPENED IN CLIENT")     
         
         client_socket.close()
         
 if __name__ == "__main__":
-    print(ASCII_PANDA_ART)
-    print("\U0001F43C") # panda
-    print("\U0001F38D") # bamboo
-    print("\U0001F43E") # paws 🐾
-    print("\U0001F96C") # leaves 🥬
+    # debug
+    # print(ASCII_PANDA_ART)
+    # print("\U0001F43C") # panda
+    # print("\U0001F38D") # bamboo
+    # print("\U0001F43E") # paws 🐾
+    # print("\U0001F96C") # leaves 🥬
     start_client()
 
 # def start_client():
