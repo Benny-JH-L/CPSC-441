@@ -2,6 +2,7 @@
 import socket
 import threading
 import sys
+import random
 
 # Server configuration
 SERVER_HOST = 'localhost'
@@ -11,6 +12,54 @@ CLIENT_TIMEOUT = 60
 
 REQUEST_CHECK_UNIQUE_USERNAME = "CHECK_UNIQUE_USER"
 REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
+REQUEST_GROVE = "@grove"
+REQUEST_BAMBOO = "@bamboo"
+
+LIST_PANDA_THEMED_DECORATIONS = [
+    "\U0001F43C", # 🐼
+    "\U0001F38D", # 🎍
+    "\U0001F43E", # 🐾
+    "\U0001F96C"  # 🥬
+    ]
+
+LIST_OF_PANDA_FACTS = [
+    "Did you know, the scientific name for giant panda's are 'Ailuropoda melanoleuca' which translates to 'black and white cat-foot'",
+    "Did you know, panda's are good swimmers and climbers.",
+    "Did you know, panda's spend at least half of the day eating, up to 16 hours a day!",
+    "Did you know, giant panda's poop around 100 times a day.",
+    "Did you know, giant panda's are considered `living fossils` because they haven't evolved much in their millions of years of life on Earth.",
+    "Did you know, panda's have a `pseudo thumb` that helps them grip bamboo.",
+    "Did you know, a panda's jaws are so strong they similar to that of a lion.",
+    "Did you know, giant panda mothers will breathe heavily on their cubs to keep them warm and humid."
+]
+# Citations:
+# The first 5 panda facts are from: https://www.ifaw.org/ca-en/journal/15-fascinating-facts-giant-pandas 
+# 6-8 are from: https://nationalzoo.si.edu/animals/news/50-panda-facts-celebrate-50-years-giant-pandas-smithsonians-national-zoo
+
+
+ASCII_PANDA_ART = '''
+                               -|-_
+                                | _
+                               <|/
+                                | |,
+                               |-|-o
+                               |<|.
+                _,..._,m,      |,
+             ,/'      '"";     | |,
+            /             ".
+          ,'mmmMMMMmm.      \  -|-_"
+        _/-"^^^^^"""%#%mm,   ;  | _ o
+  ,m,_,'              "###)  ;,
+ (###%                 \#/  ;##mm.
+  ^#/  __        ___    ;  (######)
+   ;  //.\\     //.\\   ;   \####/
+  _; (#\"//     \\"/#)  ;  ,/
+ @##\ \##/   =   `"=" ,;mm/
+ `\##>.____,...,____,<####@
+                       ""'     m1a   
+'''
+# Art obtained from: https://ascii.co.uk/art/panda 
+
 
 # original
 # def display_messages(client_socket):
@@ -44,8 +93,11 @@ REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
 #             break
 
 def display_messages(client_socket, username):
-    """Receives and displays messages while keeping the user prompt at the bottom without extra spacing."""
-    print("Entered display chat room messages")
+    """
+    Receives and displays messages while keeping the user prompt at the bottom of the terminal.
+    """
+    
+    print("[DEBUG] Entered display chat room messages") # debug
     
     while True:
         try:
@@ -53,21 +105,28 @@ def display_messages(client_socket, username):
             if not response:
                 break
             
-            # Clear current input line
-            sys.stdout.write("\r" + " " * 100 + "\r")  # Clear input
-            
-            # Print message without extra newline
-            print("response:",response)
+            # print(f"[display_messages] response: {response}")
+            # response, rest = response.split("|", 1)
+            # print(f"[display_messages] split response: {response} and rest: {rest}")
+
+            # if (response == REQUEST_GROVE):         # print the list of connected users
+            #     list_of_connected_users = rest
+            #     sys.stdout.write(rest + "\n")
+                
+            sys.stdout.write("\r" + " " * 100 + "\r")  # clear current input line
             sys.stdout.write(response + "\n")  
-            
-            # Restore the input prompt
-            sys.stdout.write(f"\r{username} > ")
+            sys.stdout.write(f"\r{username} > ")    # print "username > "
             sys.stdout.flush()
         except:
+            print("[Exception in display messages]")
             break
 
-
 def is_unique_username(client_socket, username_to_check):
+    """
+    [Client] Checks if the user name is unique, ie. if there is no client already with this username.
+    Sends the `username_to_check` to the server, and the server checks if it is unique.
+    """
+    
     print("Entered username checker...")
     
     message = f"{REQUEST_CHECK_UNIQUE_USERNAME}|{username_to_check}|{""}"
@@ -76,10 +135,10 @@ def is_unique_username(client_socket, username_to_check):
     response = client_socket.recv(RECV_SIZE).decode()
     
     if (response.lower() == "true"):
-        print(f"{username_to_check} is a unique username")
+        print(f"{username_to_check} is a unique username")  # debug
         return True
     
-    print(f"{username_to_check} is NOT a unique username")
+    print(f"{username_to_check} is NOT a unique username")  # debug
     return False
 
 def start_client():
@@ -87,49 +146,72 @@ def start_client():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         
         try:
+            # establish a connection to the server
             client_socket.connect((SERVER_HOST, SERVER_PORT))
                         
-            # ask the user for a username 
+            # ask the user for a unique username 
             username = ""
-            while(username == ""):
+            print(ASCII_PANDA_ART)
+            while(username == ""): 
                 username_to_check = input("Please choose a username: ")
-            
+                
+                # check if the entered username is unique
                 if (is_unique_username(client_socket, username_to_check)):
-                    username = username_to_check
-                    print(f"[CLIENT] username set to: {username}")
+                    username = username_to_check                    # set the user name
+                    print(f"[CLIENT] Username set to: {username}")  # debug
                     break
             
-            # thread to update the chat messages to this client
+            # thread to update the chat room messages for this client
             try:
                 thread = threading.Thread(target=display_messages, args=(client_socket, username,))
                 thread.start()
             except:
-                print("Thread exception...")
+                print("[CLIENT] Thread exception...")
+                return
             
             while(True):
-                # message = input(f"{username} > ")
+                # ask the user for an input, ie message
                 sys.stdout.write(f"{username} > ")
                 sys.stdout.flush()
                 message = input()
                 
-                if (message == "@leaves"):
+                # sent message will be in the form of (excluding the spaces): "<request type> | <user name> | <message>"
+                if (message == "@leaves"):  # leave chat room
                     print("Leaving the chatroom...")
-                    client_socket.close()
                     break
-                # elif (message == "@bamboo"):
+                elif (message == "@bamboo"):  # random panda-related fact
+                    randIndex = random.randint(0, len(LIST_OF_PANDA_FACTS) - 1)
+                    randFact = LIST_OF_PANDA_FACTS[randIndex]
+                    print(f"@bamboo > {randFact}")
                     
-                # elif (message == "@grove"):
+                elif (message == "@grove"):   # lists all current connected users
+                    request = f"{REQUEST_GROVE}|{username}|{""}"
+                    client_socket.send(request.encode())
+
                     
-                # send chat message
+                    # print users
+                    
+                    
+                # send message to the chat room
                 else:
+                    # get randome panda-themed decor
+                    randIndex = random.randint(0, len(LIST_PANDA_THEMED_DECORATIONS) - 1)
+                    randEmoji = LIST_PANDA_THEMED_DECORATIONS[randIndex]
+                    message = message + " " + randEmoji
                     message = f"{REQUEST_SEND_MESSAGE}|{username}|{message}"
                     client_socket.send(message.encode())
             
         except:
             print("EXCEPTION HAPPENED IN CLIIENT")     
-            client_socket.close()
-            
+        
+        client_socket.close()
+        
 if __name__ == "__main__":
+    print(ASCII_PANDA_ART)
+    print("\U0001F43C") # panda
+    print("\U0001F38D") # bamboo
+    print("\U0001F43E") # paws 🐾
+    print("\U0001F96C") # leaves 🥬
     start_client()
 
 # def start_client():

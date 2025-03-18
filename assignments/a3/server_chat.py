@@ -1,6 +1,7 @@
 
 import socket
 import threading
+import random
 import logging
 from collections import Counter
 
@@ -18,14 +19,37 @@ CHAT_ROOM_SIZE = 5
 
 REQUEST_CHECK_UNIQUE_USERNAME = "CHECK_UNIQUE_USER"
 REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
+REQUEST_GROVE = "@grove"
 
-def is_unique_username(username):
+LIST_PANDA_THEMED_DECORATIONS = [
+    "\U0001F43C", # 🐼
+    "\U0001F38D", # 🎍
+    "\U0001F43E", # 🐾
+    "\U0001F96C"  # 🥬
+    ]
+
+def is_unique_username(client_socket, username):
+    """
+    [Server] Checks if the user name is unique, ie. if there is no client already with this username.
+    """
     
     for user in LIST_OF_USERNAMES:
         if (username == user):
-            return "false"
+            return "false" # is not a unique username
+    
     LIST_OF_USERNAMES.append(username)
-    return "true" # is unique
+    joined_message = f"{username} joined the chat! {LIST_PANDA_THEMED_DECORATIONS[0]}{LIST_PANDA_THEMED_DECORATIONS[2]}" 
+    send_message_to_chatroom(client_socket, username, joined_message) # announce a new user joined to all the clients
+    
+    # announce a new user joined to all the clients
+    # for client in LIST_OF_CLIENTS:
+    #     if client != client_socket:
+    #         try:
+    #             client.send(joined_message.encode())
+    #         except:
+    #             LIST_OF_CLIENTS.remove(client)
+                
+    return "true" # is a unique username
 
 # causing "echo's"
 # def send_message_to_chatroom(client_socket, username, message):
@@ -39,6 +63,9 @@ def is_unique_username(username):
 #                 continue
 
 def send_message_to_chatroom(client_socket, username, message):
+    """
+    Sends the `message` to all the clients. (ie updates the chat room with the new message)
+    """
     message_from_other_user = f"{username} > {message}"  # Format message once
     
     # send the `message_from_other_user` to all other users (excluding the one who sent it)
@@ -57,9 +84,6 @@ def handle_client(client_socket, client_address):
         
     # client_socket.settimeout(CLIENT_TIMEOUT)  # Set timeout for receiving data
     numTimeouts = 0  # Initialize timeout counter
-    # username = ""
-    
-    # incoming message will be in the form of: <request type> | <user name> | <message>
     
     try:
         while True:
@@ -70,16 +94,27 @@ def handle_client(client_socket, client_address):
             
             print(f"received client message: {client_message}")
             
-            request_type, username, message = client_message.split("|")
+            # incoming message will be in the form of (excluding the spaces): "<request type> | <user name> | <message>"
+            # request_type, username, message = client_message.split("|")
+            request_type, username, message = client_message.strip().split("|")
             
             if (request_type == REQUEST_SEND_MESSAGE):
                 send_message_to_chatroom(client_socket, username, message)
                 
             elif (request_type == REQUEST_CHECK_UNIQUE_USERNAME):
-                result = is_unique_username(username)
-                print("[SERVER_CHECKING_UNIQUE_USERNAME] result =",result)
+                result = is_unique_username(client_socket, username).strip()
+                print("[SERVER] CHECKING UNIQUE USERNAME result =",result)  # debug
+                client_socket.send(result.encode())     # tell client the if the username is unique
                 
-                client_socket.send(result.encode()) # tell client the username is unique
+            elif (request_type == REQUEST_GROVE):
+                # formmated_list_of_connected_users = "@grove|----Connected users----\n"
+                formmated_list_of_connected_users = "----Connected users----\n"
+                
+                for connected_user in LIST_OF_USERNAMES:
+                    formmated_list_of_connected_users = f"{formmated_list_of_connected_users}[{connected_user}]\n"
+                
+                client_socket.send(formmated_list_of_connected_users.encode())
+                print("[SERVER] grove sent...")
                 
             else:
                 print("_____INVALID REQUEST TYPE_____")
