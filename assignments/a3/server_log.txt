@@ -70,3 +70,215 @@
 2025-03-17 12:17:15,416 - Connection from ('127.0.0.1', 53973)
 2025-03-17 12:17:16,593 - Data recieved: <username:, message:CHECK_UNIQUE_USER> from ('127.0.0.1', 53973)
 2025-03-17 12:17:16,594 - Closed connection with ('127.0.0.1', 53973)
+2025-03-17 18:03:28,456 - Server started and listening on localhost:12345
+2025-03-17 18:03:32,881 - Connection from ('127.0.0.1', 64690)
+2025-03-17 18:03:34,511 - Data recieved: <username:, message:CHECK_UNIQUE_USER> from ('127.0.0.1', 64690)
+2025-03-17 18:03:34,511 - Closed connection with ('127.0.0.1', 64690)
+2025-03-17 18:38:56,919 - Server started and listening on localhost:12345
+2025-03-17 18:39:01,702 - Connection from ('127.0.0.1', 49543)
+2025-03-17 18:39:01,702 - Closed connection with ('127.0.0.1', 49543)
+2025-03-17 18:39:04,547 - Connection from ('127.0.0.1', 49546)
+2025-03-17 18:39:04,548 - Closed connection with ('127.0.0.1', 49546)
+2025-03-17 18:41:22,728 - Connection from ('127.0.0.1', 49626)
+2025-03-17 18:41:54,717 - Closed connection with ('127.0.0.1', 49626)
+2025-03-17 18:42:00,912 - Server started and listening on localhost:12345
+2025-03-17 18:42:03,587 - Connection from ('127.0.0.1', 49645)
+2025-03-17 18:42:30,561 - Closed connection with ('127.0.0.1', 49645)
+2025-03-17 18:43:37,036 - Server started and listening on localhost:12345
+2025-03-17 18:43:39,157 - Connection from ('127.0.0.1', 49705)
+2025-03-17 18:43:41,235 - Closed connection with ('127.0.0.1', 49705)
+2025-03-17 18:44:01,332 - Server started and listening on localhost:12345
+2025-03-17 18:44:04,181 - Connection from ('127.0.0.1', 49719)
+2025-03-17 18:44:05,752 - Closed connection with ('127.0.0.1', 49719)
+2025-03-17 18:44:41,516 - Server started and listening on localhost:12345
+2025-03-17 18:44:43,582 - Connection from ('127.0.0.1', 49751)
+2025-03-17 18:44:45,051 - Closed connection with ('127.0.0.1', 49751)
+2025-03-17 18:46:15,842 - Server started and listening on localhost:12345
+2025-03-17 18:46:17,733 - Connection from ('127.0.0.1', 49803)
+2025-03-17 18:46:18,853 - Closed connection with ('127.0.0.1', 49803)
+2025-03-17 18:47:07,504 - Server started and listening on localhost:12345
+2025-03-17 18:47:09,255 - Connection from ('127.0.0.1', 49831)
+2025-03-17 18:47:10,203 - Closed connection with ('127.0.0.1', 49831)
+2025-03-17 18:48:53,889 - Server started and listening on localhost:12345
+2025-03-17 18:48:55,813 - Connection from ('127.0.0.1', 49885)
+2025-03-17 18:48:56,864 - Closed connection with ('127.0.0.1', 49885)
+2025-03-17 18:49:45,124 - Server started and listening on localhost:12345
+2025-03-17 18:49:47,300 - Connection from ('127.0.0.1', 49915)
+2025-03-17 18:49:48,953 - Closed connection with ('127.0.0.1', 49915)
+2025-03-17 18:50:47,215 - Server started and listening on localhost:12345
+2025-03-17 18:50:50,090 - Connection from ('127.0.0.1', 49946)
+2025-03-17 18:50:51,684 - Closed connection with ('127.0.0.1', 49946)
+2025-03-17 18:51:46,579 - Server started and listening on localhost:12345
+2025-03-17 18:51:46,949 - Connection from ('127.0.0.1', 49975)
+2025-03-17 18:51:47,935 - Closed connection with ('127.0.0.1', 49975)
+2025-03-17 18:52:12,083 - Server started and listening on localhost:12345
+2025-03-17 18:52:13,219 - Connection from ('127.0.0.1', 49990)
+2025-03-17 18:52:14,385 - Closed connection with ('127.0.0.1', 49990)
+2025-03-17 18:52:47,907 - Server started and listening on localhost:12345
+2025-03-17 18:52:50,039 - Connection from ('127.0.0.1', 50045)
+2025-03-17 18:52:51,084 - Closed connection with ('127.0.0.1', 50045)
+2025-03-17 18:53:25,363 - Server started and listening on localhost:12345
+2025-03-17 18:53:25,636 - Connection from ('127.0.0.1', 50068)
+2025-03-17 18:53:26,644 - Closed connection with ('127.0.0.1', 50068)
+2025-03-17 18:54:33,122 - Server started and listening on localhost:12345
+2025-03-17 18:54:36,152 - Connection from ('127.0.0.1', 50111)
+2025-03-17 18:55:38,103 - Closed connection with ('127.0.0.1', 50111)
+2025-03-17 18:56:07,932 - Server started and listening on localhost:12345
+2025-03-17 18:56:09,418 - Connection from ('127.0.0.1', 50161)
+2025-03-17 18:57:10,666 - Closed connection with ('127.0.0.1', 50161)
+2025-03-17 18:57:42,441 - Server started and listening on localhost:12345
+2025-03-17 18:57:43,851 - Connection from ('127.0.0.1', 50209)
+2025-03-17 18:58:44,725 - Server started and listening on localhost:12345
+2025-03-17 18:58:46,807 - Connection from ('127.0.0.1', 50250)
+2025-03-17 18:59:50,021 - Server started and listening on localhost:12345
+2025-03-17 18:59:52,438 - Connection from ('127.0.0.1', 50289)
+2025-03-17 19:00:30,023 - Server started and listening on localhost:12345
+2025-03-17 19:00:33,058 - Connection from ('127.0.0.1', 50321)
+2025-03-17 19:00:56,000 - Closed connection with ('127.0.0.1', 50321)
+2025-03-17 19:01:00,964 - Connection from ('127.0.0.1', 50335)
+2025-03-17 19:02:00,681 - Server started and listening on localhost:12345
+2025-03-17 19:02:02,419 - Connection from ('127.0.0.1', 50365)
+2025-03-17 19:03:03,113 - Closed connection with ('127.0.0.1', 50365)
+2025-03-17 19:03:23,105 - Server started and listening on localhost:12345
+2025-03-17 19:03:25,224 - Connection from ('127.0.0.1', 50414)
+2025-03-17 19:04:07,472 - Closed connection with ('127.0.0.1', 50414)
+2025-03-17 19:04:11,631 - Server started and listening on localhost:12345
+2025-03-17 19:04:13,479 - Connection from ('127.0.0.1', 50442)
+2025-03-17 19:05:18,422 - Connection from ('127.0.0.1', 50476)
+2025-03-17 19:06:16,792 - Server started and listening on localhost:12345
+2025-03-17 19:06:18,940 - Connection from ('127.0.0.1', 50510)
+2025-03-17 19:06:38,471 - Connection from ('127.0.0.1', 50523)
+2025-03-17 19:07:05,057 - Closed connection with ('127.0.0.1', 50510)
+2025-03-17 19:07:05,648 - Closed connection with ('127.0.0.1', 50523)
+2025-03-17 19:07:08,390 - Connection from ('127.0.0.1', 50535)
+2025-03-17 19:07:09,008 - Connection from ('127.0.0.1', 50537)
+2025-03-17 19:07:51,616 - Closed connection with ('127.0.0.1', 50535)
+2025-03-17 19:07:52,036 - Closed connection with ('127.0.0.1', 50537)
+2025-03-17 19:07:54,696 - Connection from ('127.0.0.1', 50561)
+2025-03-17 19:07:56,458 - Connection from ('127.0.0.1', 50562)
+2025-03-17 19:08:06,743 - Closed connection with ('127.0.0.1', 50561)
+2025-03-17 19:08:56,945 - Closed connection with ('127.0.0.1', 50562)
+2025-03-17 19:09:21,253 - Server started and listening on localhost:12345
+2025-03-17 19:09:23,236 - Connection from ('127.0.0.1', 50616)
+2025-03-17 19:09:25,345 - Connection from ('127.0.0.1', 50618)
+2025-03-17 19:10:29,129 - Closed connection with ('127.0.0.1', 50618)
+2025-03-17 19:10:32,952 - Closed connection with ('127.0.0.1', 50616)
+2025-03-17 19:11:31,457 - Server started and listening on localhost:12345
+2025-03-17 19:11:33,645 - Connection from ('127.0.0.1', 50682)
+2025-03-17 19:11:35,395 - Connection from ('127.0.0.1', 50684)
+2025-03-17 19:12:29,086 - Server started and listening on localhost:12345
+2025-03-17 19:12:30,800 - Connection from ('127.0.0.1', 50714)
+2025-03-17 19:12:36,541 - Connection from ('127.0.0.1', 50721)
+2025-03-17 19:14:52,766 - Closed connection with ('127.0.0.1', 50714)
+2025-03-17 19:14:53,901 - Closed connection with ('127.0.0.1', 50721)
+2025-03-17 19:14:59,621 - Server started and listening on localhost:12345
+2025-03-17 19:15:01,126 - Connection from ('127.0.0.1', 50798)
+2025-03-17 19:15:02,453 - Connection from ('127.0.0.1', 50802)
+2025-03-17 19:16:05,569 - Server started and listening on localhost:12345
+2025-03-17 19:16:06,655 - Connection from ('127.0.0.1', 50856)
+2025-03-17 19:16:07,807 - Connection from ('127.0.0.1', 50857)
+2025-03-17 19:16:33,345 - Closed connection with ('127.0.0.1', 50856)
+2025-03-17 19:16:33,799 - Closed connection with ('127.0.0.1', 50857)
+2025-03-17 19:16:36,716 - Connection from ('127.0.0.1', 50877)
+2025-03-17 19:16:37,873 - Connection from ('127.0.0.1', 50878)
+2025-03-17 19:17:19,877 - Closed connection with ('127.0.0.1', 50877)
+2025-03-17 19:17:20,362 - Closed connection with ('127.0.0.1', 50878)
+2025-03-17 19:17:22,851 - Connection from ('127.0.0.1', 50902)
+2025-03-17 19:17:24,814 - Connection from ('127.0.0.1', 50904)
+2025-03-17 19:17:42,413 - Closed connection with ('127.0.0.1', 50904)
+2025-03-17 19:17:44,250 - Connection from ('127.0.0.1', 50916)
+2025-03-17 19:19:03,094 - Server started and listening on localhost:12345
+2025-03-17 19:19:04,393 - Connection from ('127.0.0.1', 50953)
+2025-03-17 19:19:05,824 - Connection from ('127.0.0.1', 50957)
+2025-03-17 19:23:00,217 - Server started and listening on localhost:12345
+2025-03-17 19:23:02,252 - Connection from ('127.0.0.1', 51098)
+2025-03-17 19:23:04,521 - Connection from ('127.0.0.1', 51101)
+2025-03-17 19:23:50,201 - Server started and listening on localhost:12345
+2025-03-17 19:23:51,732 - Connection from ('127.0.0.1', 51126)
+2025-03-17 19:23:52,768 - Connection from ('127.0.0.1', 51128)
+2025-03-17 19:25:03,653 - Closed connection with ('127.0.0.1', 51126)
+2025-03-17 19:25:04,100 - Closed connection with ('127.0.0.1', 51128)
+2025-03-17 19:25:06,222 - Connection from ('127.0.0.1', 51182)
+2025-03-17 19:25:07,273 - Connection from ('127.0.0.1', 51183)
+2025-03-17 19:25:43,887 - Closed connection with ('127.0.0.1', 51182)
+2025-03-17 19:25:44,646 - Closed connection with ('127.0.0.1', 51183)
+2025-03-17 19:25:47,097 - Connection from ('127.0.0.1', 51202)
+2025-03-17 19:25:48,232 - Connection from ('127.0.0.1', 51204)
+2025-03-17 19:26:12,325 - Closed connection with ('127.0.0.1', 51204)
+2025-03-17 19:26:17,701 - Server started and listening on localhost:12345
+2025-03-17 19:26:19,084 - Connection from ('127.0.0.1', 51221)
+2025-03-17 19:26:20,979 - Connection from ('127.0.0.1', 51224)
+2025-03-17 19:26:46,690 - Closed connection with ('127.0.0.1', 51221)
+2025-03-17 19:26:51,579 - Connection from ('127.0.0.1', 51239)
+2025-03-17 19:27:45,431 - Closed connection with ('127.0.0.1', 51239)
+2025-03-17 19:27:46,149 - Closed connection with ('127.0.0.1', 51224)
+2025-03-17 19:27:49,218 - Connection from ('127.0.0.1', 51269)
+2025-03-17 19:27:51,196 - Connection from ('127.0.0.1', 51270)
+2025-03-17 19:28:46,738 - Closed connection with ('127.0.0.1', 51269)
+2025-03-17 19:28:47,176 - Closed connection with ('127.0.0.1', 51270)
+2025-03-17 19:28:52,079 - Server started and listening on localhost:12345
+2025-03-17 19:28:53,204 - Connection from ('127.0.0.1', 51305)
+2025-03-17 19:28:54,368 - Connection from ('127.0.0.1', 51308)
+2025-03-17 19:29:29,183 - Closed connection with ('127.0.0.1', 51308)
+2025-03-17 19:29:30,242 - Closed connection with ('127.0.0.1', 51305)
+2025-03-17 19:29:33,735 - Connection from ('127.0.0.1', 51328)
+2025-03-17 19:29:35,027 - Connection from ('127.0.0.1', 51329)
+2025-03-17 19:30:25,610 - Closed connection with ('127.0.0.1', 51329)
+2025-03-17 19:30:31,259 - Server started and listening on localhost:12345
+2025-03-17 19:30:32,472 - Connection from ('127.0.0.1', 51372)
+2025-03-17 19:30:33,062 - Connection from ('127.0.0.1', 51373)
+2025-03-17 19:33:25,858 - Closed connection with ('127.0.0.1', 51372)
+2025-03-17 19:33:26,878 - Closed connection with ('127.0.0.1', 51373)
+2025-03-17 19:33:31,015 - Server started and listening on localhost:12345
+2025-03-17 19:33:32,259 - Connection from ('127.0.0.1', 51457)
+2025-03-17 19:33:33,280 - Connection from ('127.0.0.1', 51459)
+2025-03-17 19:34:01,754 - Server started and listening on localhost:12345
+2025-03-17 19:34:04,163 - Connection from ('127.0.0.1', 51474)
+2025-03-17 19:34:04,706 - Connection from ('127.0.0.1', 51476)
+2025-03-17 19:34:41,037 - Server started and listening on localhost:12345
+2025-03-17 19:34:42,639 - Connection from ('127.0.0.1', 51497)
+2025-03-17 19:34:43,715 - Connection from ('127.0.0.1', 51500)
+2025-03-17 19:39:14,899 - Closed connection with ('127.0.0.1', 51500)
+2025-03-17 19:39:19,339 - Closed connection with ('127.0.0.1', 51497)
+2025-03-17 19:39:24,212 - Server started and listening on localhost:12345
+2025-03-17 19:39:25,794 - Connection from ('127.0.0.1', 51740)
+2025-03-17 19:39:26,248 - Connection from ('127.0.0.1', 51742)
+2025-03-17 19:39:28,000 - Closed connection with ('127.0.0.1', 51740)
+2025-03-17 19:39:30,468 - Closed connection with ('127.0.0.1', 51742)
+2025-03-17 19:39:44,326 - Server started and listening on localhost:12345
+2025-03-17 19:39:46,021 - Connection from ('127.0.0.1', 51752)
+2025-03-17 19:39:46,652 - Connection from ('127.0.0.1', 51756)
+2025-03-17 19:39:48,479 - Closed connection with ('127.0.0.1', 51752)
+2025-03-17 19:40:45,280 - Server started and listening on localhost:12345
+2025-03-17 19:40:46,978 - Connection from ('127.0.0.1', 51792)
+2025-03-17 19:40:47,523 - Connection from ('127.0.0.1', 51794)
+2025-03-17 19:42:04,813 - Closed connection with ('127.0.0.1', 51792)
+2025-03-17 19:42:05,550 - Closed connection with ('127.0.0.1', 51794)
+2025-03-17 19:42:09,603 - Server started and listening on localhost:12345
+2025-03-17 19:42:10,138 - Connection from ('127.0.0.1', 51837)
+2025-03-17 19:42:10,517 - Connection from ('127.0.0.1', 51838)
+2025-03-17 19:42:47,194 - Connection from ('127.0.0.1', 51854)
+2025-03-17 19:44:43,244 - Closed connection with ('127.0.0.1', 51837)
+2025-03-17 19:44:43,693 - Closed connection with ('127.0.0.1', 51854)
+2025-03-17 19:44:44,278 - Closed connection with ('127.0.0.1', 51838)
+2025-03-17 19:44:52,119 - Server started and listening on localhost:12345
+2025-03-17 19:44:53,339 - Connection from ('127.0.0.1', 51913)
+2025-03-17 19:44:53,940 - Connection from ('127.0.0.1', 51915)
+2025-03-17 19:44:55,839 - Connection from ('127.0.0.1', 51917)
+2025-03-17 19:49:35,162 - Closed connection with ('127.0.0.1', 51913)
+2025-03-17 19:49:35,503 - Closed connection with ('127.0.0.1', 51915)
+2025-03-17 19:49:35,888 - Closed connection with ('127.0.0.1', 51917)
+2025-03-17 19:49:45,018 - Server started and listening on localhost:12345
+2025-03-17 19:49:46,608 - Connection from ('127.0.0.1', 52071)
+2025-03-17 19:49:47,181 - Connection from ('127.0.0.1', 52073)
+2025-03-17 19:49:47,751 - Connection from ('127.0.0.1', 52074)
+2025-03-17 19:51:10,776 - Closed connection with ('127.0.0.1', 52071)
+2025-03-17 19:51:11,029 - Closed connection with ('127.0.0.1', 52073)
+2025-03-17 19:51:11,329 - Closed connection with ('127.0.0.1', 52074)
+2025-03-17 19:51:16,484 - Server started and listening on localhost:12345
+2025-03-17 19:51:17,614 - Connection from ('127.0.0.1', 52129)
+2025-03-17 19:51:18,149 - Connection from ('127.0.0.1', 52131)
+2025-03-17 19:51:18,575 - Connection from ('127.0.0.1', 52133)
+2025-03-17 19:53:31,020 - Closed connection with ('127.0.0.1', 52131)
+2025-03-17 19:53:31,442 - Closed connection with ('127.0.0.1', 52133)
+2025-03-17 19:53:32,724 - Closed connection with ('127.0.0.1', 52129)
