@@ -1,4 +1,7 @@
 
+# Assignment 3: Create a Panda-Chat
+#     CPSC 441 Winter 2025 | Benny Liang | 30192142
+
 import socket
 import threading
 import sys
