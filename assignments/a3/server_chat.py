@@ -14,11 +14,11 @@ logging.basicConfig(filename='server_log.txt', level=logging.INFO, format='%(asc
 # Constants for the server configuration
 HOST = 'localhost'
 PORT = 12345
+
 RECV_SIZE = 1024
-# CLIENT_TIMEOUT = 600
+CHAT_ROOM_SIZE = 5
 LIST_OF_CLIENTS = []
 LIST_OF_USERNAMES = []  # turn this into a set
-CHAT_ROOM_SIZE = 5
 
 REQUEST_CHECK_UNIQUE_USERNAME = "CHECK_UNIQUE_USER"
 REQUEST_SEND_MESSAGE = "SEND_MESSAGE"
@@ -32,6 +32,7 @@ LIST_PANDA_THEMED_DECORATIONS = [
     "\U0001F96C"  # 🥬
     ]
 
+
 def is_unique_username(client_socket, username):
     """
     [Server] Checks if the user name is unique, ie. if there is no client already with this username.
@@ -44,28 +45,10 @@ def is_unique_username(client_socket, username):
     LIST_OF_USERNAMES.append(username)
     joined_message = f"{username} joined the chat! {LIST_PANDA_THEMED_DECORATIONS[0]}{LIST_PANDA_THEMED_DECORATIONS[2]}" 
     send_message_to_chatroom(client_socket, username, joined_message) # announce a new user joined to all the clients
-    
-    # announce a new user joined to all the clients
-    # for client in LIST_OF_CLIENTS:
-    #     if client != client_socket:
-    #         try:
-    #             client.send(joined_message.encode())
-    #         except:
-    #             LIST_OF_CLIENTS.remove(client)
 
     print(f"[SERVER] {username} joined the chat.")  # debug
     return "true" # is a unique username
 
-# causing "echo's"
-# def send_message_to_chatroom(client_socket, username, message):
-    
-#     for client in LIST_OF_CLIENTS:
-#         if (client != client_socket):
-#             try:
-#                 message = f"{username} > {message}"
-#                 client.send(message.encode())
-#             finally:    # if the message is unable to send to a client, send to the next one
-#                 continue
 
 def send_message_to_chatroom(client_socket, username, message):
     """
@@ -99,7 +82,6 @@ def handle_client(client_socket, client_address):
             print(f"received client message: {client_message}")
             
             # incoming message will be in the form of (excluding the spaces): "<request type> | <user name> | <message>"
-            # request_type, username, message = client_message.split("|")
             request_type, username, message = client_message.strip().split("|")
             
             if request_type == REQUEST_EXIT:
@@ -158,72 +140,3 @@ def start_server():
 
 if __name__ == '__main__':
     start_server()
-
-
-# def is_unique_username(check_user):
-    
-#     for i in range(0, len(LIST_OF_USERNAMES)):
-#         if (LIST_OF_USERNAMES[i] == check_user):
-#             return False
-    
-#     return True
-
-    # try:
-        
-    #     # check unique username
-    #     # asking_for_username -= True
-    #     while (username != ""):
-    #         client_data = client_socket.recv(RECV_SIZE).decode()
-    #         user = client_data
-    #         # user, message = client_data.split("|")
-            
-    #         if (is_unique_username(user)):
-    #             username = user
-    #             break
-    #         else:
-    #             response = "EXIST"
-    #             client_socket.send(response.encode())
-            
-    #     while numTimeouts < 3:  # Allow up to 3 timeouts before closing connection
-    #         try:
-    #             # Receive data from the client
-    #             client_data = client_socket.recv(RECV_SIZE).decode()
-    #             message = client_data
-                
-    #             # log data recieved from specific client
-    #             logging.info(f"Data recieved: <username:{username}, message:{message}> from {client_address}")
-    #             print(f"Data recieved: <username:{username}, message:{message}> from {client_address}")
-                
-    #             if not client_data:  # Client has closed the connection
-    #                 logging.info(f"Client {client_address} disconnected...")
-    #                 print(f"Client {client_address} disconnected...")
-    #                 break
-
-    #             numTimeouts = 0 # reset count 
-                
-    #             # send this message to every client
-    #             for i in range(0, len(LIST_OF_CLIENTS)):
-    #                 if (LIST_OF_CLIENTS == client_socket):
-    #                     continue
-    #                 LIST_OF_CLIENTS[i].send(f"<{username}>: {message}")
-                                
-    #             logging.info(f"Sent response: <{client_data}> to {client_address}")
-    #             print(f"Sent response: <{client_data}> to {client_address}")
-
-    #         except socket.timeout:
-    #             numTimeouts += 1
-    #             logging.info(f"Client {client_address} timeout ({numTimeouts} timeouts)... Waiting...")
-    #             print(f"Client {client_address} timeout ({numTimeouts} timeouts)... Waiting...")
-        
-    #     # print and log time out due to client not responding
-    #     if (numTimeouts >= 3):
-    #         logging.info(f"Max timeouts reached, closing connection with client {client_address}...")
-    #         print(f"Max timeouts reached, closing connection with client {client_address}...")
-        
-    # finally:
-    #     # Close the client connection
-    #     client_socket.close()
-    #     logging.info(f"Closed connection with {client_address}")
-    #     print(f"Closed connection with {client_address}")
-
-
