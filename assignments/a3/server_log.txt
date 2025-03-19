@@ -1,0 +1,58 @@
+2025-03-18 22:03:34,310 - Server started and listening on localhost:12345
+2025-03-18 22:03:38,427 - Connection from ('127.0.0.1', 49152)
+2025-03-18 22:03:47,361 - Server received client message <CHECK_UNIQUE_USER|Bobby|> from [('127.0.0.1', 49152)]
+2025-03-18 22:03:47,361 - [('127.0.0.1', 49152)] | username <> is unique: 
+2025-03-18 22:03:48,405 - Connection from ('127.0.0.1', 49159)
+2025-03-18 22:03:49,835 - Server received client message <CHECK_UNIQUE_USER|Jeff|> from [('127.0.0.1', 49159)]
+2025-03-18 22:03:49,835 - [('127.0.0.1', 49159)] | username <> is unique: 
+2025-03-18 22:03:52,268 - Server received client message <@grove|Bobby|> from [('127.0.0.1', 49152)]
+2025-03-18 22:03:52,268 - [('127.0.0.1', 49152)] | sent @grove ----Connected users----
+[Bobby]
+[Jeff]
+.
+2025-03-18 22:03:56,479 - Server received client message <SEND_MESSAGE|Jeff|hello \U0001f43e> from [('127.0.0.1', 49159)]
+2025-03-18 22:03:56,480 - [('127.0.0.1', 49159)] | sent message to chat: hello \U0001f43e
+2025-03-18 22:03:58,628 - Server received client message <SEND_MESSAGE|Bobby|hi! \U0001f43e> from [('127.0.0.1', 49152)]
+2025-03-18 22:03:58,628 - [('127.0.0.1', 49152)] | sent message to chat: hi! \U0001f43e
+2025-03-18 22:04:05,714 - Connection from ('127.0.0.1', 49167)
+2025-03-18 22:04:08,630 - Server received client message <CHECK_UNIQUE_USER|Sam|> from [('127.0.0.1', 49167)]
+2025-03-18 22:04:08,630 - [('127.0.0.1', 49167)] | username <> is unique: 
+2025-03-18 22:04:12,221 - Server received client message <SEND_MESSAGE|Sam|hi! \U0001f96c> from [('127.0.0.1', 49167)]
+2025-03-18 22:04:12,221 - [('127.0.0.1', 49167)] | sent message to chat: hi! \U0001f96c
+2025-03-18 22:04:26,139 - Server received client message <@grove|Jeff|> from [('127.0.0.1', 49159)]
+2025-03-18 22:04:26,140 - [('127.0.0.1', 49159)] | sent @grove ----Connected users----
+[Bobby]
+[Jeff]
+[Sam]
+.
+2025-03-18 22:04:32,260 - Server received client message <SEND_MESSAGE|Jeff|fun! \U0001f43c> from [('127.0.0.1', 49159)]
+2025-03-18 22:04:32,260 - [('127.0.0.1', 49159)] | sent message to chat: fun! \U0001f43c
+2025-03-18 22:04:35,269 - Server received client message <SEND_MESSAGE|Jeff|:) \U0001f43e> from [('127.0.0.1', 49159)]
+2025-03-18 22:04:35,269 - [('127.0.0.1', 49159)] | sent message to chat: :) \U0001f43e
+2025-03-18 22:04:38,016 - Server received client message <EXIT|Jeff|> from [('127.0.0.1', 49159)]
+2025-03-18 22:04:38,016 - [('127.0.0.1', 49159)] | Jeff has left.
+2025-03-18 22:04:38,016 - Closed connection with ('127.0.0.1', 49159)
+2025-03-18 22:04:38,016 - Closed connection with ('127.0.0.1', 49159)
+2025-03-18 22:04:41,794 - Server received client message <@grove|Bobby|> from [('127.0.0.1', 49152)]
+2025-03-18 22:04:41,795 - [('127.0.0.1', 49152)] | sent @grove ----Connected users----
+[Bobby]
+[Sam]
+.
+2025-03-18 22:04:59,464 - Server received client message <EXIT|Bobby|> from [('127.0.0.1', 49152)]
+2025-03-18 22:04:59,464 - [('127.0.0.1', 49152)] | Bobby has left.
+2025-03-18 22:04:59,465 - Closed connection with ('127.0.0.1', 49152)
+2025-03-18 22:04:59,465 - Closed connection with ('127.0.0.1', 49152)
+2025-03-18 22:05:02,600 - Server received client message <@grove|Sam|> from [('127.0.0.1', 49167)]
+2025-03-18 22:05:02,600 - [('127.0.0.1', 49167)] | sent @grove ----Connected users----
+[Sam]
+.
+2025-03-18 22:05:05,726 - Server received client message <SEND_MESSAGE|Sam|:( \U0001f43e> from [('127.0.0.1', 49167)]
+2025-03-18 22:05:05,726 - [('127.0.0.1', 49167)] | sent message to chat: :( \U0001f43e
+2025-03-18 22:05:09,735 - Server received client message <SEND_MESSAGE|Sam|everyone left \U0001f43e> from [('127.0.0.1', 49167)]
+2025-03-18 22:05:09,735 - [('127.0.0.1', 49167)] | sent message to chat: everyone left \U0001f43e
+2025-03-18 22:05:25,565 - Server received client message <SEND_MESSAGE|Sam|leaves \U0001f43e> from [('127.0.0.1', 49167)]
+2025-03-18 22:05:25,565 - [('127.0.0.1', 49167)] | sent message to chat: leaves \U0001f43e
+2025-03-18 22:05:28,486 - Server received client message <EXIT|Sam|> from [('127.0.0.1', 49167)]
+2025-03-18 22:05:28,486 - [('127.0.0.1', 49167)] | Sam has left.
+2025-03-18 22:05:28,486 - Closed connection with ('127.0.0.1', 49167)
+2025-03-18 22:05:28,486 - Closed connection with ('127.0.0.1', 49167)
