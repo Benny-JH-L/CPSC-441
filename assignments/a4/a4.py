@@ -70,8 +70,26 @@ def shortest_path(graph, start, end):
 if __name__ == "__main__":
     
     with open(GRAPH_INFO_LOCATION, "r") as file:
-        content = file.read()
-    print(content)
+        magical_path_info_unprocessed = file.readlines()
+    # print(magical_path_info_unprocessed)    # debug
+    
+    # remove new line and white spaces
+    magical_path_info_unprocessed = [item.strip() for item in magical_path_info_unprocessed]
+    # print(magical_path_info_unprocessed) # debug
+    
+    # each edge contains the info: [<starting province>, <destination province>, <no. hops>, <distance (km)>, <time (hr)>, <dementor count>]
+    edges = [magical_path_info_unprocessed[i:i+6] for i in range(0, len(magical_path_info_unprocessed), 6)]
+    # print(edges)    # debug
+    
+    # create the graph
+    # note: there are multiple magic path's from <start> to <dest> with diff edge info, so i store them as a list of lists,
+    # for example: graph[start][destination] will have the edge values [[edge info 1], [edge info 2], ...], where [edge info #] contains <no. hops>, <distance (km)>, <time (hr)>, <dementor count>
+    graph = defaultdict(lambda: defaultdict(list))   # adjacency list representation
+    for edge in edges:
+        start, dest, _, _, _, _ = edge
+        graph[start][dest].append(edge[2:])       # node `start` will point to node `dest` with `edge` info (removing the `start` and `dest` from `edge` list)
+        
+    print(graph)
     
     # # Example graph (adjacency list representation)
     # graph = defaultdict(dict, {
