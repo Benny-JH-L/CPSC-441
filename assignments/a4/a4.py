@@ -4,69 +4,212 @@
 
 
 import heapq
+import networkx as nx
+import matplotlib.pyplot as plt
 from collections import defaultdict
 
 GRAPH_INFO_LOCATION = "magical_paths.txt" 
 DESTINATION_NODE = "Ottawa"
 infinity = 10e6
 
-def dijkstra(graph, start):
+# def dijkstra(graph, start):
+#     """
+#     Dijkstra's algorithm for finding shortest paths from a start node to all other nodes.
+    
+#     Args:
+#         graph: Dictionary representing the graph {node: {neighbor: weight}}
+#         start: Starting node
+    
+#     Returns:
+#         Dictionary of shortest distances to each node
+#         Dictionary of previous nodes for path reconstruction
+#     """
+#     # Initialize distances with infinity and set start node distance to 0
+#     distances = {node: float('infinity') for node in graph}
+#     distances[start] = 0
+    
+#     # Priority queue (min-heap) to select node with minimum distance
+#     priority_queue = [(0, start)]
+    
+#     # Dictionary to keep track of previous nodes for path reconstruction
+#     previous_nodes = {node: None for node in graph}
+    
+#     while priority_queue:
+#         current_distance, current_node = heapq.heappop(priority_queue)
+        
+#         # Skip if we've already found a better path
+#         if current_distance > distances[current_node]:
+#             continue
+            
+#         # Explore neighbors
+#         for neighbor, weight in graph[current_node].items():
+#             distance = current_distance + weight
+            
+#             # Only consider this new path if it's better
+#             if distance < distances[neighbor]:
+#                 distances[neighbor] = distance
+#                 previous_nodes[neighbor] = current_node
+#                 heapq.heappush(priority_queue, (distance, neighbor))
+    
+#     return distances, previous_nodes
+
+# def shortest_path(graph, start, end):
+#     """Get the shortest path from start to end using Dijkstra's algorithm"""
+#     distances, previous_nodes = dijkstra(graph, start)
+    
+#     path = []
+#     current_node = end
+    
+#     # Reconstruct path by following previous nodes
+#     while current_node is not None:
+#         path.append(current_node)
+#         current_node = previous_nodes[current_node]
+    
+#     # Reverse to get path from start to end
+#     path = path[::-1]
+    
+#     return path, distances[end]
+
+import heapq
+
+def dijkstra(graph, start, weight_index):
     """
-    Dijkstra's algorithm for finding shortest paths from a start node to all other nodes.
+    Dijkstra shortest path algorithm. Finds the shortest path based on an edge value indicated by `weight_index`.
+    For example, if `weight_index` is 0 and an edge is: [123, 45566, 819263, 1443] it will utilize edge[0] (123) weight value to compute the shortest path for the graph.
+    `graph` must be represented as an adjacency list (dictionary).
+    `start` the starting node to of the algorithm.
     
-    Args:
-        graph: Dictionary representing the graph {node: {neighbor: weight}}
-        start: Starting node
-    
-    Returns:
-        Dictionary of shortest distances to each node
-        Dictionary of previous nodes for path reconstruction
+    Returns an list of shorest distance to all other nodes starting from `start` node, using the indicated edge weight value based from `weight_index`.
     """
-    # Initialize distances with infinity and set start node distance to 0
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
-    
-    # Priority queue (min-heap) to select node with minimum distance
-    priority_queue = [(0, start)]
-    
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, start))  # (distance, node)
+    shortest_distances = {node: float('inf') for node in graph}
+    shortest_distances[start] = 0
+
     # Dictionary to keep track of previous nodes for path reconstruction
     previous_nodes = {node: None for node in graph}
-    
+
     while priority_queue:
         current_distance, current_node = heapq.heappop(priority_queue)
         
-        # Skip if we've already found a better path
-        if current_distance > distances[current_node]:
+        # skip if we've already found a better path already
+        if current_distance > shortest_distances[current_node]:
             continue
+        
+        # print(f"current ndoe: {current_node}")  # debug
+        
+        for neighbor, weights in graph[current_node].items():   # get all the current node's neighbours 
+            # print(f"\t{neighbor}")  # debug
             
-        # Explore neighbors
-        for neighbor, weight in graph[current_node].items():
+            weight = weights[weight_index]  # select the edge weight based on `weight_index`, ex. if weight_index = 0 then we compute with respect to No. hops
             distance = current_distance + weight
             
-            # Only consider this new path if it's better
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
+            # If found a shorter path to neighbor, update and push to priority queue
+            if distance < shortest_distances[neighbor]:
                 previous_nodes[neighbor] = current_node
+                shortest_distances[neighbor] = distance
                 heapq.heappush(priority_queue, (distance, neighbor))
     
-    return distances, previous_nodes
+    return shortest_distances, previous_nodes
 
-def shortest_path(graph, start, end):
-    """Get the shortest path from start to end using Dijkstra's algorithm"""
-    distances, previous_nodes = dijkstra(graph, start)
+
+def dijkstra_shortest_path(graph, start, weight_index):
+    distances, previous_nodes = dijkstra(graph, start, weight_index)
+
+    return distances    
+    # path = []
+    # current_node = start
     
-    path = []
-    current_node = end
+    # # Reconstruct path by following previous nodes
+    # while current_node is not None:
+    #     path.append(current_node)
+    #     current_node = previous_nodes[current_node]
     
-    # Reconstruct path by following previous nodes
-    while current_node is not None:
-        path.append(current_node)
-        current_node = previous_nodes[current_node]
+    # # Reverse to get path from start to end
+    # path = path[::-1]
     
-    # Reverse to get path from start to end
-    path = path[::-1]
+    # return path, distances[start]
+
+# (makes one graph)
+def make_graph_visual(graph, weight_index, graph_name):
+    """
+    Generate graph visual using the indicated weight in the parameter.
+    0 <= `weight_index`< 4.
+    """
     
-    return path, distances[end]
+    G = nx.DiGraph()  # Use a directed graph to maintain correct edge directions
+    for node, edges in graph.items():
+        print(f"curr node: {node}")     # debug
+        for neighbor, weights in edges.items():
+            print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            weight = weights[weight_index]
+            G.add_edge(node, neighbor, weight=weight)
+        print()
+
+    pos = nx.spring_layout(G, seed=37, scale=20, k=55)
+
+    # draw nodes and edges
+    plt.figure(figsize=(10, 6), num=graph_name)
+    nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=2000, font_size=10, font_weight='bold', arrows=True)
+
+    # Draw edge labels (weights)
+    edge_labels = {(u, v): f"{d['weight']}" for u, v, d in G.edges(data=True)}
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9)
+    # plt.margins(0.2)  # Adjust margins
+    
+    # Show plot
+    plt.title("Graph Visualization with Edge Weights")
+    plt.show()
+
+
+# (enables multiple graph generation)
+def make_graph_visual_multiple(graph, weight_index, graph_name, ax):
+    """
+    Generate graph visual using the indicated weight in the parameter.
+    0 <= `weight_index`< 4. (This version enables the ability of creating more than one window for a graph)
+    """
+    
+    G = nx.DiGraph()  # Use a directed graph to maintain correct edge directions
+    for node, edges in graph.items():
+        print(f"curr node: {node}")     # debug
+        for neighbor, weights in edges.items():
+            print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            weight = weights[weight_index]
+            G.add_edge(node, neighbor, weight=weight)
+        print()
+
+    pos = nx.spring_layout(G, seed=37, scale=20, k=55)
+    ax.clear()
+
+    # draw nodes and edges
+    # plt.figure(figsize=(10, 6), num=graph_name)
+    nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=2000, font_size=10, font_weight='bold', arrows=True, ax=ax)
+
+    # Draw edge labels (weights)
+    edge_labels = {(u, v): f"{d['weight']}" for u, v, d in G.edges(data=True)}
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9, ax= ax)
+    # plt.margins(0.2)  # Adjust margins
+    
+    # Show plot
+    # plt.title("Graph Visualization with Edge Weights")
+    # plt.show()
+
+    ax.set_title(graph_name)
+
+
+def make_all_graphs():
+    graph_name1 = "Graph with edges as Distance (km)"
+    graph_name2 = "Graph with edges as No. of Hops"
+
+    # Create the first figure and its subplot
+    fig1, ax1 = plt.subplots(figsize=(7, 5), num="Graph 1")
+    make_graph_visual_multiple(graph, weight_keys[1], graph_name1, ax1)
+
+    # Create the second figure and its subplot
+    fig2, ax2 = plt.subplots(figsize=(7, 5), num="Graph 2")
+    make_graph_visual_multiple(graph, weight_keys[0], graph_name2, ax2)
+
+    plt.show()
 
 # Example usage
 if __name__ == "__main__":
@@ -107,31 +250,38 @@ if __name__ == "__main__":
                 # set the new edge info as the min values
                 new_edge_info = [min(new_edge_info[0], int(hop)), min(new_edge_info[1], int(distance)), min(new_edge_info[2], int(time)), min(new_edge_info[3], int(num_dementor))]
             graph[key][key2] = new_edge_info
+    
+    # ensure that the destination node, Ottawa, is in the graph
+    if (not (DESTINATION_NODE in graph)):
+        graph[DESTINATION_NODE] = {}
+    
     print(graph)    # debug
     
-    harry_start = "British Columbia"
-    hermione_start = "Ontario"
-    ron_start = "Quebec"
-    luna_start = "Newfoundland and Labrador"
-    neville_start = "Saskatchewan"
-    ginny_start = "Nova Scotia"
+    alumni_locations = ["British Columbia", "Ontario", "Quebec", "Newfoundland and Labrador", "Saskatchewan",  "Nova Scotia"]
+    # harry_start = "British Columbia"
+    # hermione_start = "Ontario"
+    # ron_start = "Quebec"
+    # luna_start = "Newfoundland and Labrador"
+    # neville_start = "Saskatchewan"
+    # ginny_start = "Nova Scotia"
+
+    # 0: No. hops
+    # 1: Distance
+    # 2: time
+    # 3: dementors    
+    weight_keys = [0, 1, 2, 3]
+    weight_type = ["No. of Hops", "Distance (km)", "Time (hrs)", "Dementors"]
+
+    shortest_paths = dijkstra_shortest_path(graph, alumni_locations[0], 0)
+    print(f"\nshortest_paths from {alumni_locations[0]} to all other nodes: {shortest_paths}")
     
-    # # Example graph (adjacency list representation)
-    # graph = defaultdict(dict, {
-    #     'A': {'B': 1, 'C': 4},
-    #     'B': {'A': 1, 'C': 2, 'D': 5},
-    #     'C': {'A': 4, 'B': 2, 'D': 1},
-    #     'D': {'B': 5, 'C': 1}
-    # })
-    # # graph['E']['D'] = 4 # do this to add a new entry to adj list.
-    
-    # print(graph)
-    
-    # start_node = 'A'
-    # end_node = 'D'
-    
-    # path, distance = shortest_path(graph, start_node, end_node)
-    
-    # print(f"Shortest path from {start_node} to {end_node}: {' -> '.join(path)}")
-    # print(f"Total distance: {distance}")
+    # Create a figure with 2 subplots (side by side)
+    # fig, axs = plt.subplots(1, 2, figsize=(14, 6))
+
+    graph_name = "Graph with edges as Distance (km)"
+    make_graph_visual(graph, weight_keys[1], graph_name)
+
+    # alternatively if you want to see 4 graphs each representing a edge value, ex. one for dementors, another for time, etc.
+    # make_all_graphs()
+
 
