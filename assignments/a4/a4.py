@@ -70,8 +70,6 @@ infinity = 10e6
     
 #     return path, distances[end]
 
-import heapq
-
 def dijkstra(graph, start, weight_index):
     """
     Dijkstra shortest path algorithm. Finds the shortest path based on an edge value indicated by `weight_index`.
@@ -79,7 +77,7 @@ def dijkstra(graph, start, weight_index):
     `graph` must be represented as an adjacency list (dictionary).
     `start` the starting node to of the algorithm.
     
-    Returns an list of shorest distance to all other nodes starting from `start` node, using the indicated edge weight value based from `weight_index`.
+    Returns a dictionary of shorest distance to all other nodes starting from `start` node, using the indicated edge weight value based from `weight_index`.
     """
     priority_queue = []
     heapq.heappush(priority_queue, (0, start))  # (distance, node)
@@ -136,12 +134,15 @@ def make_graph_visual(graph, weight_index, graph_name):
     Generate graph visual using the indicated weight in the parameter.
     0 <= `weight_index`< 4.
     """
+    print("Generating one graph...")
     
-    G = nx.DiGraph()  # Use a directed graph to maintain correct edge directions
+    G = nx.DiGraph()    # directed graph
     for node, edges in graph.items():
-        print(f"curr node: {node}")     # debug
+        # print(f"curr node: {node}")     # debug
+        
         for neighbor, weights in edges.items():
-            print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            # print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            
             weight = weights[weight_index]
             G.add_edge(node, neighbor, weight=weight)
         print()
@@ -152,28 +153,28 @@ def make_graph_visual(graph, weight_index, graph_name):
     plt.figure(figsize=(10, 6), num=graph_name)
     nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=2000, font_size=10, font_weight='bold', arrows=True)
 
-    # Draw edge labels (weights)
+    # draw edge labels (weights)
     edge_labels = {(u, v): f"{d['weight']}" for u, v, d in G.edges(data=True)}
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9)
-    # plt.margins(0.2)  # Adjust margins
     
-    # Show plot
-    plt.title("Graph Visualization with Edge Weights")
+    # show graph
     plt.show()
 
 
 # (enables multiple graph generation)
-def make_graph_visual_multiple(graph, weight_index, graph_name, ax):
+def make_graph_visual_multiple(graph, weight_index, ax):
     """
     Generate graph visual using the indicated weight in the parameter.
     0 <= `weight_index`< 4. (This version enables the ability of creating more than one window for a graph)
     """
     
-    G = nx.DiGraph()  # Use a directed graph to maintain correct edge directions
+    G = nx.DiGraph()  # directed graph
     for node, edges in graph.items():
-        print(f"curr node: {node}")     # debug
+        # print(f"curr node: {node}")     # debug
+        
         for neighbor, weights in edges.items():
-            print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            # print(f"neighbour: {neighbor} edge weight: {weights[weight_index]}")    # debug
+            
             weight = weights[weight_index]
             G.add_edge(node, neighbor, weight=weight)
         print()
@@ -182,38 +183,39 @@ def make_graph_visual_multiple(graph, weight_index, graph_name, ax):
     ax.clear()
 
     # draw nodes and edges
-    # plt.figure(figsize=(10, 6), num=graph_name)
     nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=2000, font_size=10, font_weight='bold', arrows=True, ax=ax)
 
-    # Draw edge labels (weights)
+    # draw edge labels (weights)
     edge_labels = {(u, v): f"{d['weight']}" for u, v, d in G.edges(data=True)}
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9, ax= ax)
-    # plt.margins(0.2)  # Adjust margins
-    
-    # Show plot
-    # plt.title("Graph Visualization with Edge Weights")
-    # plt.show()
-
-    ax.set_title(graph_name)
 
 
+# function to generate all the graphs based on edge seprate values
 def make_all_graphs():
-    graph_name1 = "Graph with edges as Distance (km)"
-    graph_name2 = "Graph with edges as No. of Hops"
+    print("Generating multiple graphs...")
+    
+    graph_name1= "Graph with edges as No. of Hops"
+    graph_name2 = "Graph with edges as Distance (km)"
+    graph_name3 = "Graph with edges as Time (hrs)"
+    graph_name4 = "Graph with edges as No. Dementors"
+    
 
-    # Create the first figure and its subplot
-    fig1, ax1 = plt.subplots(figsize=(7, 5), num="Graph 1")
-    make_graph_visual_multiple(graph, weight_keys[1], graph_name1, ax1)
+    fig1, ax1 = plt.subplots(figsize=(7, 5), num=graph_name1)
+    make_graph_visual_multiple(graph, weight_keys[0], ax1)
 
-    # Create the second figure and its subplot
-    fig2, ax2 = plt.subplots(figsize=(7, 5), num="Graph 2")
-    make_graph_visual_multiple(graph, weight_keys[0], graph_name2, ax2)
+    fig2, ax2 = plt.subplots(figsize=(7, 5), num=graph_name2)
+    make_graph_visual_multiple(graph, weight_keys[1], ax2)
+    
+    fig3, ax3 = plt.subplots(figsize=(7, 5), num=graph_name3)
+    make_graph_visual_multiple(graph, weight_keys[2], ax3)
 
+    fig4, ax4 = plt.subplots(figsize=(7, 5), num=graph_name4)
+    make_graph_visual_multiple(graph, weight_keys[3], ax4)
     plt.show()
 
-# Example usage
 if __name__ == "__main__":
     
+    # open the file containing the graph information
     with open(GRAPH_INFO_LOCATION, "r") as file:
         magical_path_info_unprocessed = file.readlines()
     # print(magical_path_info_unprocessed)    # debug
@@ -258,6 +260,7 @@ if __name__ == "__main__":
     print(graph)    # debug
     
     alumni_locations = ["British Columbia", "Ontario", "Quebec", "Newfoundland and Labrador", "Saskatchewan",  "Nova Scotia"]
+    alumni_names = ["Harry", "Hermione", "Ron", "Luna", "Neville", "Ginny"]
     # harry_start = "British Columbia"
     # hermione_start = "Ontario"
     # ron_start = "Quebec"
@@ -271,17 +274,25 @@ if __name__ == "__main__":
     # 3: dementors    
     weight_keys = [0, 1, 2, 3]
     weight_type = ["No. of Hops", "Distance (km)", "Time (hrs)", "Dementors"]
+    shortest_path_type = ["Shortest Hop Path (SHP)", "Shortest Distance Path (SDP)", "Shortest Time Path (STP)", "Fewest Dementors Path (FDP)"]
 
-    shortest_paths = dijkstra_shortest_path(graph, alumni_locations[0], 0)
-    print(f"\nshortest_paths from {alumni_locations[0]} to all other nodes: {shortest_paths}")
+    # use `dijkstra_shortest_path()` for 3 of the alumni
+    for x in range(0, 3):
+        
+        print(f"\nAlumni {alumni_names[x]} optimal paths (Starting location {alumni_locations[x]}):")
+        for indx in weight_keys:
+            shortest_paths = dijkstra_shortest_path(graph, alumni_locations[x], weight_keys[indx])
+            print(f"{shortest_path_type[indx]}: {shortest_paths[DESTINATION_NODE]}")
+            print(f"\r\t{shortest_path_type[indx]} from {alumni_locations[x]} to all other nodes: {shortest_paths}")     # debug
+        print()
+    # use `` for the other 3 alumni
     
-    # Create a figure with 2 subplots (side by side)
-    # fig, axs = plt.subplots(1, 2, figsize=(14, 6))
 
     graph_name = "Graph with edges as Distance (km)"
     make_graph_visual(graph, weight_keys[1], graph_name)
-
+    
     # alternatively if you want to see 4 graphs each representing a edge value, ex. one for dementors, another for time, etc.
+    # but make sure to comment out the above `graph()` function
     # make_all_graphs()
 
 
