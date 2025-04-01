@@ -16,9 +16,9 @@ Like any Python code, please be in the same directory as the file and run:
 `python <client/server file name>.py`
 
 To exit the program, press the `x` at the top right of the graph visual.
-If you prefer to see graphs represented by all the different edge weights, ex. No. hops, No. dementors, distance, and time.
-you can uncomment the line at the bottom of `a4.py` `make_all_graphs()`, and please make sure `make_graph_visual()` above it is commented.
-(So you don't have to exit that graph to see the other graphs)
+
+If you prefer to see different graphs represented by all the different edge weights, ex. No. hops, No. dementors, distance, and time.
+you can set `VISUALIZE_ONE_GRAPH` to False at the top of `a4.py`.
 
 
 ---Notes about graph visual---
