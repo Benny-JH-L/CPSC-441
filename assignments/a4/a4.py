@@ -75,68 +75,107 @@ def dijkstra_shortest_path(graph, start, weight_index, use_normal_version):
     return distances, path_taken
 
 
-def a_star(graph, start, goal, heuristic, weights):
-    """
-    A* algorithm for finding the shortest path in a graph with multiple edge weights.
+# def a_star(graph, start, goal, heuristic, weights):
+#     """
+#     A* algorithm for finding the shortest path in a graph with multiple edge weights.
     
-    graph: Dictionary representing the graph (adjacency list format).
-    start: The starting node.
-    goal: The goal node.
-    heuristic: A function that provides a heuristic estimate of the distance from a node to the goal.
-    weights: A list of weights [w1, w2, w3, w4] to scale the edge weight values.
+#     graph: Dictionary representing the graph (adjacency list format).
+#     start: The starting node.
+#     goal: The goal node.
+#     heuristic: A function that provides a heuristic estimate of the distance from a node to the goal.
+#     weights: A list of weights [w1, w2, w3, w4] to scale the edge weight values.
     
-    Returns: The shortest path as a list of nodes and the total path cost.
-    """
+#     Returns: The shortest path as a list of nodes and the total path cost.
+#     """
     
-    # Priority queue to store nodes with their f(n) = g(n) + h(n) value
-    open_list = []
-    heapq.heappush(open_list, (0 + heuristic(start, goal), start))  # (f(n), node)
+#     # Priority queue to store nodes with their f(n) = g(n) + h(n) value
+#     open_list = []
+#     heapq.heappush(open_list, (0 + heuristic(start, goal), start))  # (f(n), node)
     
-    # g(n) - the cost from start to the current node
-    g_costs = {node: float('inf') for node in graph}
-    g_costs[start] = 0
+#     # g(n) - the cost from start to the current node
+#     g_costs = {node: float('inf') for node in graph}
+#     g_costs[start] = 0
     
-    # Came from - to reconstruct the path
-    came_from = {}
+#     # Came from - to reconstruct the path
+#     came_from = {}
     
-    while open_list:
-        # Get the node with the lowest f(n) = g(n) + h(n)
-        current_f, current_node = heapq.heappop(open_list)
+#     while open_list:
+#         # Get the node with the lowest f(n) = g(n) + h(n)
+#         current_f, current_node = heapq.heappop(open_list)
         
-        # If we've reached the goal, reconstruct the path
-        if current_node == goal:
-            path = []
-            while current_node in came_from:
-                path.append(current_node)
-                current_node = came_from[current_node]
-            path.append(start)
-            path.reverse()
-            return path, g_costs[goal]
+#         # If we've reached the goal, reconstruct the path
+#         if current_node == goal:
+#             path = []
+#             while current_node in came_from:
+#                 path.append(current_node)
+#                 current_node = came_from[current_node]
+#             path.append(start)
+#             path.reverse()
+#             return path, g_costs[goal]
         
-        # Explore neighbors
-        for neighbor, weights_list in graph[current_node].items():
-            # Calculate the weighted sum of the edge costs
-            weighted_cost = sum(weights[i] * weights_list[i] for i in range(len(weights_list)))
+#         # Explore neighbors
+#         for neighbor, weights_list in graph[current_node].items():
+#             # Calculate the weighted sum of the edge costs
+#             weighted_cost = sum(weights[i] * weights_list[i] for i in range(len(weights_list)))
             
-            tentative_g_cost = g_costs[current_node] + weighted_cost
+#             tentative_g_cost = g_costs[current_node] + weighted_cost
             
-            # If a shorter path to the neighbor has been found
-            if tentative_g_cost < g_costs[neighbor]:
-                came_from[neighbor] = current_node
-                g_costs[neighbor] = tentative_g_cost
-                f_cost = tentative_g_cost + heuristic(neighbor, goal)
-                heapq.heappush(open_list, (f_cost, neighbor))
+#             # If a shorter path to the neighbor has been found
+#             if tentative_g_cost < g_costs[neighbor]:
+#                 came_from[neighbor] = current_node
+#                 g_costs[neighbor] = tentative_g_cost
+#                 f_cost = tentative_g_cost + heuristic(neighbor, goal)
+#                 heapq.heappush(open_list, (f_cost, neighbor))
     
-    return None, float('inf')  # Return None if no path is found
+#     return None, float('inf')  # Return None if no path is found
 
-# Example heuristic function (straight-line or any domain-specific estimate)
-def example_heuristic(node, goal):
+# # Example heuristic function (straight-line or any domain-specific estimate)
+# def example_heuristic(node, goal):
+#     """
+#     Heuristic function to estimate cost from the current node to the goal.
+#     Replace this with a domain-specific heuristic.
+#     """
+#     # For simplicity, use zero heuristic (equivalent to Dijkstra's)
+#     return 0
+
+def a_star(graph, start, goal, weight_index):
     """
-    Heuristic function to estimate cost from the current node to the goal.
-    Replace this with a domain-specific heuristic.
+    Perform A* search on the given graph.
+    
+    :param graph: The adjacency list representation of the graph.
+    :param start: The starting node.
+    :param goal: The goal node.
+    :param weight_index: The index of the weight value in the edge list.
+    :return: The shortest path and its cost.
     """
-    # For simplicity, use zero heuristic (equivalent to Dijkstra's)
-    return 0
+    
+    # Heuristic function: Uses straight-line distance approximation (or zero if unavailable)
+    def heuristic(node, goal):
+        return 0  # Replace with actual heuristic if available
+    
+    # Priority queue for A*
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, start, []))  # (cost, node, path)
+    
+    # Cost dictionary to store the shortest known cost to reach each node
+    cost_so_far = {start: 0}
+    
+    while priority_queue:
+        current_cost, current_node, path = heapq.heappop(priority_queue)
+        
+        if current_node == goal:
+            return path + [current_node], current_cost
+        
+        for neighbor, attributes in graph[current_node].items():
+            weight = attributes[weight_index]
+            new_cost = current_cost + weight
+            
+            if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
+                cost_so_far[neighbor] = new_cost
+                priority = new_cost + heuristic(neighbor, goal)
+                heapq.heappush(priority_queue, (priority, neighbor, path + [current_node]))
+    
+    return None, float('inf')  # No path found
 
 
 
@@ -324,7 +363,6 @@ if __name__ == "__main__":
             graph[key][destination_key] = new_edge_info   
             # print(f"new edge info {new_edge_info}") # debug
     # debug
-    # print(graph)
     print(f"condensed graph:")
     print_graph(graph)
     
@@ -332,7 +370,7 @@ if __name__ == "__main__":
     if (not (DESTINATION_NODE in graph)):
         graph[DESTINATION_NODE] = {}
     
-    # print(f"{graph}\n")     # debug
+    print(f"{graph}\n")     # debug
     print_graph(graph)          # debug
     
     alumni_locations = ["British Columbia", "Ontario", "Quebec", "Newfoundland and Labrador", "Saskatchewan",  "Nova Scotia"]
@@ -355,19 +393,31 @@ if __name__ == "__main__":
 
     # use `dijkstra_shortest_path()` for 3 of the alumni
     print("Using pathfinding algorithm 1 [Dijkstra]")
-    for x in range(0, int(num_alumni / 2)):
-        
+    # for x in range(0, int(num_alumni / 2)):
+    for x in range(0, num_alumni):    # debug
         print(f"Alumni {alumni_names[x]} optimal paths (Starting location {alumni_locations[x]}):")
+        
         for indx in weight_keys:
             shortest_paths, path_taken = dijkstra_shortest_path(graph, alumni_locations[x], weight_keys[indx], True)
             print(f"{shortest_path_type[indx]}: {shortest_paths[DESTINATION_NODE]}\n - path taken: {path_taken}")
             # print(f"\r\t{shortest_path_type[indx]} from {alumni_locations[x]} to all other nodes: {shortest_paths}")     # debug
+            
         print()
-    
+        
+        
+    print("Using pathfinding algorithm 2 [A*]")
+    for x in range(int(num_alumni / 2), num_alumni):
+        print(f"Alumni {alumni_names[x]} optimal paths (Starting location {alumni_locations[x]}):")
+        
+        for indx in weight_keys:
+            path_taken, min_cost = a_star(graph, alumni_locations[x], DESTINATION_NODE, indx)
+            print(f"{shortest_path_type[indx]}: {min_cost}\n - path taken: {path_taken}")
+            # print(f"{shortest_path_type[indx]}: {shortest_paths[DESTINATION_NODE]}\n - path taken: {path_taken}")
+        
+            
     # debug (test)
     print("Using pathfinding algorithm [MODIFIED Dijkstra]")
     for x in range(0, int(num_alumni / 2)):
-        
         print(f"Alumni {alumni_names[x]} path optimizes all edge weights (Starting location {alumni_locations[x]}):")
         shortest_paths, path_taken = dijkstra_shortest_path(graph, alumni_locations[x], weight_keys[indx], False)
         print(f"Path cost that optimizes all 4 edge weights (all 4 criteria): {shortest_paths[DESTINATION_NODE]}\n - path taken: {path_taken}\n")
