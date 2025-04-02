@@ -2,11 +2,18 @@
 # Assignment 4: The Harry Potter Reunion
 #     CPSC 441 Winter 2025 | Benny Liang | 30192142
 
-
 import heapq
 import networkx as nx
 import matplotlib.pyplot as plt
 from collections import defaultdict
+
+# NOTE: graph information is parsed from the file named `GRAPH_INFO_LOCATION` every 6 lines represent an edge,
+# line 1: Starting node
+# line 2: Destination node
+# line 3: No. Hops
+# line 4: Distance (km)
+# line 5: Time (hrs)
+# line 6: Dementors
 
 VISUALIZE_ONE_GRAPH = True  # If set to False, will generate 4 graphs with each one with a corresponding edge type
 # VISUALIZE_ONE_GRAPH = False
