@@ -356,7 +356,7 @@ if __name__ == "__main__":
     # visualize graph
     if (VISUALIZE_ONE_GRAPH):
         graph_name = "Graph with edges as Distance (km)"
-        make_graph_visual(graph, weight_keys[0], graph_name)
+        make_graph_visual(graph, weight_keys[1], graph_name)
     else:
         # alternatively if you want to see 4 graphs each representing a edge value, ex. one for dementors, another for time, etc.
         make_all_graphs()
