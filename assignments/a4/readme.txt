@@ -21,8 +21,8 @@ you can set `VISUALIZE_ONE_GRAPH` to False at the top of `a4.py`.
 
 
 ---Parsing Graph Information---
-Graph information is parsed from the file named `GRAPH_INFO_LOCATION` in the same 
-directory as `a4.py` every 6 lines represent an edge:
+Graph information is parsed from the file named `GRAPH_INFO_LOCATION` (variable set in `a4.py`) 
+in the same directory as `a4.py` every 6 lines represent an edge:
 line 1: Starting node
 line 2: Destination node
 line 3: No. Hops
