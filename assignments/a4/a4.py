@@ -17,6 +17,7 @@ from collections import defaultdict
 
 VISUALIZE_ONE_GRAPH = True  # If set to False, will generate 4 graphs with each one with a corresponding edge type
 # VISUALIZE_ONE_GRAPH = False
+VISUALIZE_ONE_GRAPH_TYPE = 1  # set to: [0] for No hops, [1] for Distance (km), [2] for Time (hrs), [3] for dementors
 GRAPH_INFO_LOCATION = "magical_paths.txt" 
 DESTINATION_NODE = "Ottawa"
 infinity = 10e6
@@ -355,8 +356,8 @@ if __name__ == "__main__":
 
     # visualize graph
     if (VISUALIZE_ONE_GRAPH):
-        graph_name = "Graph with edges as Distance (km)"
-        make_graph_visual(graph, weight_keys[1], graph_name)
+        graph_name = f"Graph with edges as {weight_type[VISUALIZE_ONE_GRAPH_TYPE]}"
+        make_graph_visual(graph, weight_keys[VISUALIZE_ONE_GRAPH_TYPE], graph_name)
     else:
         # alternatively if you want to see 4 graphs each representing a edge value, ex. one for dementors, another for time, etc.
         make_all_graphs()
