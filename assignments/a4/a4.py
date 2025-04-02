@@ -14,64 +14,6 @@ GRAPH_INFO_LOCATION = "magical_paths.txt"
 DESTINATION_NODE = "Ottawa"
 infinity = 10e6
 
-# def dijkstra(graph, start):
-#     """
-#     Dijkstra's algorithm for finding shortest paths from a start node to all other nodes.
-    
-#     Args:
-#         graph: Dictionary representing the graph {node: {neighbor: weight}}
-#         start: Starting node
-    
-#     Returns:
-#         Dictionary of shortest distances to each node
-#         Dictionary of previous nodes for path reconstruction
-#     """
-#     # Initialize distances with infinity and set start node distance to 0
-#     distances = {node: float('infinity') for node in graph}
-#     distances[start] = 0
-    
-#     # Priority queue (min-heap) to select node with minimum distance
-#     priority_queue = [(0, start)]
-    
-#     # Dictionary to keep track of previous nodes for path reconstruction
-#     previous_nodes = {node: None for node in graph}
-    
-#     while priority_queue:
-#         current_distance, current_node = heapq.heappop(priority_queue)
-        
-#         # Skip if we've already found a better path
-#         if current_distance > distances[current_node]:
-#             continue
-            
-#         # Explore neighbors
-#         for neighbor, weight in graph[current_node].items():
-#             distance = current_distance + weight
-            
-#             # Only consider this new path if it's better
-#             if distance < distances[neighbor]:
-#                 distances[neighbor] = distance
-#                 previous_nodes[neighbor] = current_node
-#                 heapq.heappush(priority_queue, (distance, neighbor))
-    
-#     return distances, previous_nodes
-
-# def shortest_path(graph, start, end):
-#     """Get the shortest path from start to end using Dijkstra's algorithm"""
-#     distances, previous_nodes = dijkstra(graph, start)
-    
-#     path = []
-#     current_node = end
-    
-#     # Reconstruct path by following previous nodes
-#     while current_node is not None:
-#         path.append(current_node)
-#         current_node = previous_nodes[current_node]
-    
-#     # Reverse to get path from start to end
-#     path = path[::-1]
-    
-#     return path, distances[end]
-
 def dijkstra(graph, start, weight_index):
     """
     Dijkstra shortest path algorithm. Finds the shortest path based on an edge value indicated by `weight_index`.
@@ -330,6 +272,12 @@ def make_all_graphs():
     make_graph_visual_multiple(graph, weight_keys[3], ax4)
     plt.show()
 
+def print_graph(graph):
+    print("---Graph---")
+    for key in graph.keys():
+        print(f"{key}: {graph[key]}")
+    print("------\n")
+
 if __name__ == "__main__":
     
     # open the file containing the graph information
@@ -352,29 +300,40 @@ if __name__ == "__main__":
     for edge in edges:
         start, dest, _, _, _, _ = edge
         graph_uncondensed[start][dest].append(edge[2:])       # node `start` will point to node `dest` with `edge` info (removing the `start` and `dest` from `edge` list)
-    # print(graph_uncondensed)    # debug
+    # debug
+    # print(f"{graph_uncondensed}\n")
+    print("uncondensed: ")
+    print_graph(graph_uncondensed)
     
     # condense the graph (ie remove dup edges by taking the min values of each),
     # for example, graph[start][destination] has values [[123, 123, 123, 4], [1, 123, 123, 123], [123, 2, 123, 123]]
     # then the condensed version will be graph[start][destination] has values [1, 2, 123, 4]
     graph = defaultdict(dict, {})
     for key in graph_uncondensed.keys():
-        # print(f"{key}: {graph_uncondensed[key]}")   # debug
-        # loop through all edges
-        new_edge_info = [infinity, infinity, infinity, infinity] # -> [<no. hops>, <distance (km)>, <time (hr)>, <dementor count>]
-        for key2 in graph_uncondensed[key]: # get list of edges
-            # print(f"{key2}: {graph_uncondensed[key][key2]}") # debug
-            for edge in graph_uncondensed[key][key2]:   # loop through each edge
-                hop, distance, time, num_dementor = edge
-                # set the new edge info as the min values
+        # print(f"initial: {key}")    # debug
+        
+        for destination_key in graph_uncondensed[key].keys():
+            # print(f"destination: {destination_key}")    # debug
+            new_edge_info = [infinity, infinity, infinity, infinity] # -> [<no. hops>, <distance (km)>, <time (hr)>, <dementor count>]
+            
+            for info in graph_uncondensed[key][destination_key]:
+                # print(f"{info}")    # debug
+                hop, distance, time, num_dementor = info
                 new_edge_info = [min(new_edge_info[0], int(hop)), min(new_edge_info[1], int(distance)), min(new_edge_info[2], int(time)), min(new_edge_info[3], int(num_dementor))]
-            graph[key][key2] = new_edge_info
+                
+            graph[key][destination_key] = new_edge_info   
+            # print(f"new edge info {new_edge_info}") # debug
+    # debug
+    # print(graph)
+    print(f"condensed graph:")
+    print_graph(graph)
     
     # ensure that the destination node, Ottawa, is in the graph
     if (not (DESTINATION_NODE in graph)):
         graph[DESTINATION_NODE] = {}
     
-    print(f"{graph}\n")    # debug
+    # print(f"{graph}\n")     # debug
+    print_graph(graph)          # debug
     
     alumni_locations = ["British Columbia", "Ontario", "Quebec", "Newfoundland and Labrador", "Saskatchewan",  "Nova Scotia"]
     alumni_names = ["Harry", "Hermione", "Ron", "Luna", "Neville", "Ginny"]
@@ -435,7 +394,7 @@ if __name__ == "__main__":
 
     if (VISUALIZE_ONE_GRAPH):
         graph_name = "Graph with edges as Distance (km)"
-        make_graph_visual(graph, weight_keys[1], graph_name)
+        make_graph_visual(graph, weight_keys[0], graph_name)
     else:
         # alternatively if you want to see 4 graphs each representing a edge value, ex. one for dementors, another for time, etc.
         make_all_graphs()
