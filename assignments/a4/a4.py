@@ -15,8 +15,8 @@ from collections import defaultdict
 # line 5: Time (hrs)
 # line 6: Dementors
 
-VISUALIZE_ONE_GRAPH = True  # If set to False, will generate 4 graphs with each one with a corresponding edge type
-# VISUALIZE_ONE_GRAPH = False
+# VISUALIZE_ONE_GRAPH = True  # If set to False, will generate 4 graphs with each one with a corresponding edge type
+VISUALIZE_ONE_GRAPH = False
 VISUALIZE_ONE_GRAPH_TYPE = 1  # set to: [0] for No hops, [1] for Distance (km), [2] for Time (hrs), [3] for dementors
 GRAPH_INFO_LOCATION = "magical_paths.txt" 
 DESTINATION_NODE = "Ottawa"

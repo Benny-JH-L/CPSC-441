@@ -38,4 +38,4 @@ For example, an edge going from British Columbia to Saskatchewan will have a dis
 and from Saskatchewan to British Columbia will have a distance of 1800 km
 but on the graph it will only display the Saskatchewan to British Columbia distance as it was added last.
 
-
+The graph images were saved from the program output, by clicking the floppy disk at the bottom left.
