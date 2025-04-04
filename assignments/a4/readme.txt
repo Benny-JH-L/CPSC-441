@@ -12,9 +12,9 @@ If they are not installed run the following in the command line:
 these are needed libraries for graph visualization.
 
 Like any Python code, please be in the same directory as the file and run:
-`python <client/server file name>.py`
+`python <file name>.py`
 
-To exit the program, press the `x` at the top right of the graph visual.
+To exit the program, press the `x` at the top right of [each of] the graph visual.
 
 If you prefer to see different graphs represented by all the different edge weights, ex. No. hops, No. dementors, distance, and time.
 you can set `VISUALIZE_ONE_GRAPH` to False at the top of `a4.py`.
