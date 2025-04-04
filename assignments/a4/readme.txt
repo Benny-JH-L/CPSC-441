@@ -39,3 +39,17 @@ and from Saskatchewan to British Columbia will have a distance of 1800 km
 but on the graph it will only display the Saskatchewan to British Columbia distance as it was added last.
 
 The graph images were saved from the program output, by clicking the floppy disk at the bottom left.
+
+
+---Implmentation/Bonus/Other info---
+I noticed that the edge information in the assignment spec. contained duplicate edges from nodes `n1` to `n2`, so 
+I decided to take the minimum values of each edge weight (No. of Hops, Distance, (km), Time, (hrs), Dementors) 
+and used those values to compute the shortest path for each criteria.
+
+I implmented Dijkstra and A* shortest path algorithms (and a modified Dijkstra that tries to complete the bonus/extra credit).
+
+When the program runs it will output the shortest path cost and the path taken from the starting node
+to the destination node from 3 algorithms. The first 2 Dijkstra and A* will output the 4 shortest paths of each weight,
+No. of Hops, Distance, (km), Time, (hrs), Dementors for each alumnus. 
+The 3rd algorithm is a modified Dijkstra that does the extra credit portion which tries to determine that optimal
+path that minimumizes all 4 criteria (edge weights) and will output for each alumnus.
